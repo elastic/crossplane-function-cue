@@ -1,4 +1,4 @@
-package resources
+package platform
 
 import (
 	"list"

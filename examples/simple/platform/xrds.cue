@@ -1,4 +1,4 @@
-package resources
+package platform
 
 import (
 	xp "github.com/crossplane/crossplane/apis/apiextensions/v1"
