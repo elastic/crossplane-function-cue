@@ -35,6 +35,8 @@ _suffixes: [
 	][0]
 }
 
+// #readyValue builds on top of #listWithDefaults to extract the ready state from a conditions array
+// use as: (#readyValue & { in: some.path.to.conditions.list }).out
 #readyValue: {
 	x=in:            _
 	y = _tmp:        (#listWithDefault & {in: x, def: {type: "Ready", status: "Unknown"}}).out

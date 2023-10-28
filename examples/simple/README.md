@@ -11,8 +11,16 @@ While it is entirely possible to define all XRDs, functions, and compositions in
 for the composition implementation, this approach fails to take into account the benefits of having
 the entire code base in cue, and using schemas and validations everywhere.
 
-This example goes overboard to define _everything_, include the `Makefile`, in cue. Try `cue cmd help` to
-see what's available.
+This example goes overboard to define _everything_, include the `Makefile`, in cue.
+
+## Quick start
+
+| Command        | Description                                                     |
+|----------------|-----------------------------------------------------------------|
+| `cue cmd help` | see available commands                                          |
+| `cue platform` | see the YAML for "platform" objects                             |
+| `cue user`     | see the YAML for "user" objects                                 |
+| `cue tests`    | run unit tests for compositions outside of a crossplane context | 
 
 ## Directory structure
 
@@ -72,12 +80,62 @@ commands used in the tool package can be found near the top of the file.
 
 The basic idea is get the request from the function runner and transform it to a set of managed resources.
 
-TODO: 
+* You start with an implementation that returns an empty object
+* After applying the composition with debug turned on, you'll see the request object in the function pod logs
+* Copy this locally and write your response based on what you see in this object. Start with one managed resource.
+* Re-apply the composition with the new script and debug. 
+* Rinse and repeat until all the functionality is present.
 
-* explain some more and show how simple unit tests can be written using `@if(some_test)` tags and `cue eval -t some_test` invocations. 
+The nice thing about cue is how it unifies pieces of an object and puts them together.
+This allows you to write a "module" (i.e. a separate file) for each resource that you want to compose. 
+For example, the example implementation has self-contained files, one for creating the primary bucket and setting its 
+ready state and status, one for the secondary buckets, and another for the IAM policy.
 
-* Talk about the complexity of conditional logic in cue and how the proposed builtins, when available, can make the code
-simpler in the future.
+### Unit tests
 
-* Also warn people of [cue def bugs](https://github.com/cue-lang/cue/issues/2648) when the code is consolidated and
-inlined.
+`xp-function-cue` has a subcommand called `cue-test` that allows you to write unit tests for various inputs and outputs.
+This is _extremely_ primitive but still very useful. 
+
+This works as follows:
+
+* Let's say the main package where you develop the composition is in `./runtime`
+* You create a `tests` subdirectory under it
+* Every test file is a cue file that is guarded by a `@if` tag which has the same name as the test file name. For example,
+  a file called `initial.cue` will have a line called `@if(initial)` at the top of the file (*).
+  This means that at any point only one file actually produces output based on the tag that is set.
+* In this test file you define the `_request` object fully (by copying it from the pod logs) and write what the
+  response to the request should be. You can copy the response from the function's pod logs as well if you have already  
+  implemented something and have manually checked the output.
+* When you run `xp-function-cue cue-test --pkg ./runtime` it does the following:
+  * creates a self-contained script from the `runtime` package just like `xp-function-cue package-script` would do.
+  * figures out the tags for tests using the file names in the `tests/` subdirectory
+  * for each such tag:
+    * it evaluates the `tests` subdirectory with that tag turned on and extracts the `_request` object from it.
+    * it does the same evaluation but now extracts the expected response as the full object that is returned
+    * it runs the script with the `_request` object as obtained from the test and gets the actual result
+    * it compares the expected and actual results using a YAML diff so that the differences are clearly visible.
+* See the [examples](./platform/compositions/xs3bucket/runtime/tests) for more details.
+
+(*) - the assumptions around tag names and the files they live in is antithetical to cue principles of "put whatever
+you want anywhere". We'd like some cue experts to weigh in on how they would have approached the unit testing problem.
+
+### On learning curves and bugs
+
+Cue is an awesome language that feels like magic and makes it really easy to create complex output. Its ability
+to consolidate all reachable definitions via `cue def --inline-imports` and create a sef-contained program is
+amazing in concept. The unification of resources allow you to work piece-meal on different resources independently
+without having to create a response as one giant object. Community support on the slack channel is also great.
+
+That said there are still a few rough edges and bugs that can frustrate the cue composition writer and some hardening
+is needed  :)
+
+* It has a steep learning curve and meager documentation. The use-case that we use it for (getting a dynamic,
+  mostly-schemaless object and turning it into a set of resources) is not a first-class use-case in the available docs.
+* The functional programming paradigm takes getting used to.
+* Conditional statements are extremely verbose requiring knowledge of [various patterns](https://cuetorials.com/patterns/).
+  Unfortunately, for compositions, we need to use them quite a bit since what we emit depends on observed statuses of 
+  various objects that change and may or may not even be available at different points in time.
+  The [builtins proposal](https://github.com/cue-lang/cue/issues/943), when implemented, would go a long way in making 
+  this much simpler to implement.
+* The code needs to be hardened and has some bugs. Examples: [cue def](https://github.com/cue-lang/cue/issues/2648),
+  [cue fmt](https://github.com/cue-lang/cue/issues/2646) 
