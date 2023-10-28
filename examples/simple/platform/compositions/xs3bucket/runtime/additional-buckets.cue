@@ -16,19 +16,7 @@ resources: {
 					tags:         _tags
 				}
 			}
-
-			// set its status if we see the aws resource is ready
-			let conditions = (#listWithDefault & {
-				in: _request.observed.resources[bucketName].resource.status.conditions
-				def: {type: "Ready", status: "Unknown"}
-			}).out
-			let readyValue = [ for x in conditions if x.type == "Ready" {x.status}][0]
-
-			ready: [
-				if readyValue == "True" {ready:  "READY_TRUE"},
-				if readyValue == "False" {ready: "READY_FALSE"},
-				{ready:                          "READY_UNSPECIFIED"},
-			][0].ready
+			ready: (#readyValue & {in: _request.observed.resources[bucketName].resource.status.conditions}).out
 		}
 	}
 }
@@ -45,7 +33,7 @@ let endpoints0 = [
 	},
 ]
 
-let endpoints1 =[ for e in endpoints0 if e != "unknown" {e} ]
+let endpoints1 = [ for e in endpoints0 if e != "unknown" {e}]
 
 if len(endpoints1) == len(_suffixes) && len(_suffixes) > 0 {
 	composite: resource: status: additionalEndpoints: endpoints1

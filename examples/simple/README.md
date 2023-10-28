@@ -27,7 +27,8 @@ see what's available.
   composition definitions and their implementation.
     * [compositions](platform/compositions/) - returns an aggregate of composition objects
       * &lt;resource&gt; - a specific composition resource [example](platform/compositions/xs3bucket/)
-        * runtime - the implementation of the composition function for the resource  
+        * runtime/ - the implementation of the composition function for the resource 
+          * tests/ - unit tests for the composition function at various stages of the managed object lifecycle 
 * [user](user/) - the "user" objects like namespaces and test claims.
 
 In addition:

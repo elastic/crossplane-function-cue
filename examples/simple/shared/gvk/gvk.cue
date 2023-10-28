@@ -15,5 +15,5 @@ s3Bucket: {
 }
 
 function: {
-	name:  "fn-cue-examples-simple"
+	name: "fn-cue-examples-simple"
 }

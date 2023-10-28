@@ -36,7 +36,7 @@ build:
 
 .PHONY: test
 test:
-	go test -v -race ./...
+	go test -race ./...
 
 .PHONY: lint
 lint: .bin/golangci-lint

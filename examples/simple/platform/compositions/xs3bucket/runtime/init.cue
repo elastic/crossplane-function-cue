@@ -1,6 +1,8 @@
 package runtime
 
-import "list"
+import (
+	"list"
+)
 
 // implementation note: all internal top-level variables should be defined in this file because of
 // https://github.com/cue-lang/cue/issues/2648
@@ -31,4 +33,15 @@ _suffixes: [
 		if x != _|_ {list.Concat([x, [y]])},
 		[y],
 	][0]
+}
+
+#readyValue: {
+	x=in:            _
+	y = _tmp:        (#listWithDefault & {in: x, def: {type: "Ready", status: "Unknown"}}).out
+	z = _readyValue: [ for r in y if r.type == "Ready" {r.status}][0]
+	out:             [
+				if z == "True" {ready:  "READY_TRUE"},
+				if z == "False" {ready: "READY_FALSE"},
+				{ready:                 "READY_UNSPECIFIED"},
+	][0].ready
 }

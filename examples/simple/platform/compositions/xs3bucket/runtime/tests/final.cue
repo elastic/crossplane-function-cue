@@ -2,13 +2,13 @@
 package tests
 
 _request: {
+	context: {}
 	desired: {}
 	observed: {
 		composite: resource: {
 			apiVersion: "simple.cuefn.example.com/v1alpha1"
 			kind:       "XS3Bucket"
 			metadata: {
-				annotations: {}
 				finalizers: [
 					"composite.apiextensions.crossplane.io",
 				]
@@ -16,9 +16,9 @@ _request: {
 				labels: {
 					"crossplane.io/claim-name":      "bucket1"
 					"crossplane.io/claim-namespace": "claims"
-					"crossplane.io/composite":       "bucket1-wnht2"
+					"crossplane.io/composite":       "bucket1-k4fvm"
 				}
-				name: "bucket1-wnht2"
+				name: "bucket1-k4fvm"
 			}
 			spec: {
 				claimRef: {
@@ -28,7 +28,7 @@ _request: {
 					namespace:  "claims"
 				}
 				compositionRef: name:         "xs3buckets.simple.cuefn.example.com"
-				compositionRevisionRef: name: "xs3buckets.simple.cuefn.example.com-0d79443"
+				compositionRevisionRef: name: "xs3buckets.simple.cuefn.example.com-c23f3ab"
 				compositionUpdatePolicy: "Automatic"
 				parameters: {
 					additionalSuffixes: [
@@ -36,47 +36,52 @@ _request: {
 						"-002",
 					]
 					region: "eu-west-1"
-					tags: "bucket.owner": "me"
+					tags: "bucket.purpose": "test-crossplane-cue-functions"
 				}
 				resourceRefs: [
 					{
-						apiVersion: "s3.aws.upbound.io/v1beta1"
-						kind:       "Bucket"
-						name:       "bucket1-wnht2"
+						apiVersion: "iam.aws.upbound.io/v1beta1"
+						kind:       "Policy"
+						name:       "bucket1-k4fvm-access-policy"
 					},
 					{
 						apiVersion: "s3.aws.upbound.io/v1beta1"
 						kind:       "Bucket"
-						name:       "bucket1-wnht2-001"
+						name:       "bucket1-k4fvm"
 					},
 					{
 						apiVersion: "s3.aws.upbound.io/v1beta1"
 						kind:       "Bucket"
-						name:       "bucket1-wnht2-002"
+						name:       "bucket1-k4fvm-001"
+					},
+					{
+						apiVersion: "s3.aws.upbound.io/v1beta1"
+						kind:       "Bucket"
+						name:       "bucket1-k4fvm-002"
 					},
 				]
 			}
 			status: {
 				additionalEndpoints: [
-					"bucket1-wnht2-001.s3.eu-west-1.amazonaws.com",
-					"bucket1-wnht2-002.s3.eu-west-1.amazonaws.com",
+					"bucket1-k4fvm-001.s3.eu-west-1.amazonaws.com",
+					"bucket1-k4fvm-002.s3.eu-west-1.amazonaws.com",
 				]
 				conditions: [
 					{
-						lastTransitionTime: "2023-10-21T18:22:11Z"
+						lastTransitionTime: "2023-10-28T21:01:05Z"
 						reason:             "ReconcileSuccess"
 						status:             "True"
 						type:               "Synced"
 					},
 					{
-						lastTransitionTime: "2023-10-21T18:22:11Z"
-						message:            "Unready resources: bucket-001, bucket-002, and main"
-						reason:             "Creating"
-						status:             "False"
+						lastTransitionTime: "2023-10-28T21:41:17Z"
+						reason:             "Available"
+						status:             "True"
 						type:               "Ready"
 					},
 				]
-				primaryEndpoint: "bucket1-wnht2.s3.eu-west-1.amazonaws.com"
+				iamPolicyARN:    "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+				primaryEndpoint: "bucket1-k4fvm.s3.eu-west-1.amazonaws.com"
 			}
 		}
 		resources: {
@@ -86,29 +91,29 @@ _request: {
 				metadata: {
 					annotations: {
 						"crossplane.io/composition-resource-name": "bucket-001"
-						"crossplane.io/external-create-pending":   "2023-10-19T02:13:17Z"
-						"crossplane.io/external-create-succeeded": "2023-10-19T02:13:17Z"
-						"crossplane.io/external-name":             "bucket1-wnht2-001"
+						"crossplane.io/external-create-pending":   "2023-10-28T20:29:09Z"
+						"crossplane.io/external-create-succeeded": "2023-10-28T20:29:09Z"
+						"crossplane.io/external-name":             "bucket1-k4fvm-001"
 						"upjet.crossplane.io/provider-meta":       "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1200000000000,\"delete\":3600000000000,\"read\":1200000000000,\"update\":1200000000000}}"
 					}
 					finalizers: [
 						"finalizer.managedresource.crossplane.io",
 					]
-					generateName: "bucket1-wnht2-"
+					generateName: "bucket1-k4fvm-"
 					labels: {
 						"crossplane.io/claim-name":      "bucket1"
 						"crossplane.io/claim-namespace": "claims"
-						"crossplane.io/composite":       "bucket1-wnht2"
+						"crossplane.io/composite":       "bucket1-k4fvm"
 					}
-					name: "bucket1-wnht2-001"
+					name: "bucket1-k4fvm-001"
 					ownerReferences: [
 						{
 							apiVersion:         "simple.cuefn.example.com/v1alpha1"
 							blockOwnerDeletion: true
 							controller:         true
 							kind:               "XS3Bucket"
-							name:               "bucket1-wnht2"
-							uid:                "9263eb6b-bb52-4311-8e71-80b0abecd26a"
+							name:               "bucket1-k4fvm"
+							uid:                "86cc2c8e-710d-46f9-ac96-94a29a798c08"
 						},
 					]
 				}
@@ -118,9 +123,9 @@ _request: {
 						forceDestroy: true
 						region:       "eu-west-1"
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-001"
+							"crossplane-name":           "bucket1-k4fvm-001"
 							"crossplane-providerconfig": "default"
 						}
 					}
@@ -133,9 +138,9 @@ _request: {
 				status: {
 					atProvider: {
 						accelerationStatus:       ""
-						arn:                      "arn:aws:s3:::bucket1-wnht2-001"
-						bucketDomainName:         "bucket1-wnht2-001.s3.amazonaws.com"
-						bucketRegionalDomainName: "bucket1-wnht2-001.s3.eu-west-1.amazonaws.com"
+						arn:                      "arn:aws:s3:::bucket1-k4fvm-001"
+						bucketDomainName:         "bucket1-k4fvm-001.s3.amazonaws.com"
+						bucketRegionalDomainName: "bucket1-k4fvm-001.s3.eu-west-1.amazonaws.com"
 						forceDestroy:             true
 						grant: [
 							{
@@ -148,7 +153,7 @@ _request: {
 							},
 						]
 						hostedZoneId:      "Z1BKCTXD74EZPE"
-						id:                "bucket1-wnht2-001"
+						id:                "bucket1-k4fvm-001"
 						objectLockEnabled: false
 						policy:            ""
 						requestPayer:      "BucketOwner"
@@ -168,15 +173,15 @@ _request: {
 							},
 						]
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-001"
+							"crossplane-name":           "bucket1-k4fvm-001"
 							"crossplane-providerconfig": "default"
 						}
 						tagsAll: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-001"
+							"crossplane-name":           "bucket1-k4fvm-001"
 							"crossplane-providerconfig": "default"
 						}
 						versioning: [
@@ -188,25 +193,25 @@ _request: {
 					}
 					conditions: [
 						{
-							lastTransitionTime: "2023-10-19T02:13:38Z"
+							lastTransitionTime: "2023-10-28T20:29:30Z"
 							reason:             "Available"
 							status:             "True"
 							type:               "Ready"
 						},
 						{
-							lastTransitionTime: "2023-10-21T19:14:45Z"
+							lastTransitionTime: "2023-10-28T21:02:48Z"
 							reason:             "ReconcileSuccess"
 							status:             "True"
 							type:               "Synced"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:25Z"
+							lastTransitionTime: "2023-10-28T20:29:15Z"
 							reason:             "Success"
 							status:             "True"
 							type:               "LastAsyncOperation"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:25Z"
+							lastTransitionTime: "2023-10-28T20:29:15Z"
 							reason:             "Finished"
 							status:             "True"
 							type:               "AsyncOperation"
@@ -220,29 +225,29 @@ _request: {
 				metadata: {
 					annotations: {
 						"crossplane.io/composition-resource-name": "bucket-002"
-						"crossplane.io/external-create-pending":   "2023-10-19T02:13:17Z"
-						"crossplane.io/external-create-succeeded": "2023-10-19T02:13:17Z"
-						"crossplane.io/external-name":             "bucket1-wnht2-002"
+						"crossplane.io/external-create-pending":   "2023-10-28T20:29:09Z"
+						"crossplane.io/external-create-succeeded": "2023-10-28T20:29:09Z"
+						"crossplane.io/external-name":             "bucket1-k4fvm-002"
 						"upjet.crossplane.io/provider-meta":       "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1200000000000,\"delete\":3600000000000,\"read\":1200000000000,\"update\":1200000000000}}"
 					}
 					finalizers: [
 						"finalizer.managedresource.crossplane.io",
 					]
-					generateName: "bucket1-wnht2-"
+					generateName: "bucket1-k4fvm-"
 					labels: {
 						"crossplane.io/claim-name":      "bucket1"
 						"crossplane.io/claim-namespace": "claims"
-						"crossplane.io/composite":       "bucket1-wnht2"
+						"crossplane.io/composite":       "bucket1-k4fvm"
 					}
-					name: "bucket1-wnht2-002"
+					name: "bucket1-k4fvm-002"
 					ownerReferences: [
 						{
 							apiVersion:         "simple.cuefn.example.com/v1alpha1"
 							blockOwnerDeletion: true
 							controller:         true
 							kind:               "XS3Bucket"
-							name:               "bucket1-wnht2"
-							uid:                "9263eb6b-bb52-4311-8e71-80b0abecd26a"
+							name:               "bucket1-k4fvm"
+							uid:                "86cc2c8e-710d-46f9-ac96-94a29a798c08"
 						},
 					]
 				}
@@ -252,9 +257,9 @@ _request: {
 						forceDestroy: true
 						region:       "eu-west-1"
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-002"
+							"crossplane-name":           "bucket1-k4fvm-002"
 							"crossplane-providerconfig": "default"
 						}
 					}
@@ -267,9 +272,9 @@ _request: {
 				status: {
 					atProvider: {
 						accelerationStatus:       ""
-						arn:                      "arn:aws:s3:::bucket1-wnht2-002"
-						bucketDomainName:         "bucket1-wnht2-002.s3.amazonaws.com"
-						bucketRegionalDomainName: "bucket1-wnht2-002.s3.eu-west-1.amazonaws.com"
+						arn:                      "arn:aws:s3:::bucket1-k4fvm-002"
+						bucketDomainName:         "bucket1-k4fvm-002.s3.amazonaws.com"
+						bucketRegionalDomainName: "bucket1-k4fvm-002.s3.eu-west-1.amazonaws.com"
 						forceDestroy:             true
 						grant: [
 							{
@@ -282,7 +287,7 @@ _request: {
 							},
 						]
 						hostedZoneId:      "Z1BKCTXD74EZPE"
-						id:                "bucket1-wnht2-002"
+						id:                "bucket1-k4fvm-002"
 						objectLockEnabled: false
 						policy:            ""
 						requestPayer:      "BucketOwner"
@@ -302,15 +307,15 @@ _request: {
 							},
 						]
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-002"
+							"crossplane-name":           "bucket1-k4fvm-002"
 							"crossplane-providerconfig": "default"
 						}
 						tagsAll: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2-002"
+							"crossplane-name":           "bucket1-k4fvm-002"
 							"crossplane-providerconfig": "default"
 						}
 						versioning: [
@@ -322,25 +327,121 @@ _request: {
 					}
 					conditions: [
 						{
-							lastTransitionTime: "2023-10-19T02:13:41Z"
+							lastTransitionTime: "2023-10-28T20:29:30Z"
 							reason:             "Available"
 							status:             "True"
 							type:               "Ready"
 						},
 						{
-							lastTransitionTime: "2023-10-21T19:14:42Z"
+							lastTransitionTime: "2023-10-28T21:03:00Z"
 							reason:             "ReconcileSuccess"
 							status:             "True"
 							type:               "Synced"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:24Z"
+							lastTransitionTime: "2023-10-28T20:29:15Z"
 							reason:             "Success"
 							status:             "True"
 							type:               "LastAsyncOperation"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:24Z"
+							lastTransitionTime: "2023-10-28T20:29:15Z"
+							reason:             "Finished"
+							status:             "True"
+							type:               "AsyncOperation"
+						},
+					]
+				}
+			}
+			iam_policy: resource: {
+				apiVersion: "iam.aws.upbound.io/v1beta1"
+				kind:       "Policy"
+				metadata: {
+					annotations: {
+						"crossplane.io/composition-resource-name": "iam_policy"
+						"crossplane.io/external-create-pending":   "2023-10-28T21:20:38Z"
+						"crossplane.io/external-create-succeeded": "2023-10-28T21:20:38Z"
+						"crossplane.io/external-name":             "bucket1-k4fvm-access-policy"
+						"upjet.crossplane.io/provider-meta":       "null"
+					}
+					finalizers: [
+						"finalizer.managedresource.crossplane.io",
+					]
+					generateName: "bucket1-k4fvm-"
+					labels: {
+						"crossplane.io/claim-name":      "bucket1"
+						"crossplane.io/claim-namespace": "claims"
+						"crossplane.io/composite":       "bucket1-k4fvm"
+					}
+					name: "bucket1-k4fvm-access-policy"
+					ownerReferences: [
+						{
+							apiVersion:         "simple.cuefn.example.com/v1alpha1"
+							blockOwnerDeletion: true
+							controller:         true
+							kind:               "XS3Bucket"
+							name:               "bucket1-k4fvm"
+							uid:                "86cc2c8e-710d-46f9-ac96-94a29a798c08"
+						},
+					]
+				}
+				spec: {
+					deletionPolicy: "Delete"
+					forProvider: {
+						path:   "/"
+						policy: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3BucketAccess\",\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::bucket1-k4fvm\",\"arn:aws:s3:::bucket1-k4fvm/*\",\"arn:aws:s3:::bucket1-k4fvm-001\",\"arn:aws:s3:::bucket1-k4fvm-001/*\",\"arn:aws:s3:::bucket1-k4fvm-002\",\"arn:aws:s3:::bucket1-k4fvm-002/*\"]}]}"
+						tags: {
+							"crossplane-kind":           "policy.iam.aws.upbound.io"
+							"crossplane-name":           "bucket1-k4fvm-access-policy"
+							"crossplane-providerconfig": "default"
+						}
+					}
+					initProvider: {}
+					managementPolicies: [
+						"*",
+					]
+					providerConfigRef: name: "default"
+				}
+				status: {
+					atProvider: {
+						arn:         "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+						description: ""
+						id:          "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+						path:        "/"
+						policy:      "{\"Statement\":[{\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::bucket1-k4fvm\",\"arn:aws:s3:::bucket1-k4fvm/*\",\"arn:aws:s3:::bucket1-k4fvm-001\",\"arn:aws:s3:::bucket1-k4fvm-001/*\",\"arn:aws:s3:::bucket1-k4fvm-002\",\"arn:aws:s3:::bucket1-k4fvm-002/*\"],\"Sid\":\"S3BucketAccess\"}],\"Version\":\"2012-10-17\"}"
+						policyId:    "ANPA34FXEWXYAXI6KVF6L"
+						tags: {
+							"crossplane-kind":           "policy.iam.aws.upbound.io"
+							"crossplane-name":           "bucket1-k4fvm-access-policy"
+							"crossplane-providerconfig": "default"
+						}
+						tagsAll: {
+							"crossplane-kind":           "policy.iam.aws.upbound.io"
+							"crossplane-name":           "bucket1-k4fvm-access-policy"
+							"crossplane-providerconfig": "default"
+						}
+					}
+					conditions: [
+						{
+							lastTransitionTime: "2023-10-28T21:20:56Z"
+							reason:             "Available"
+							status:             "True"
+							type:               "Ready"
+						},
+						{
+							lastTransitionTime: "2023-10-28T21:19:21Z"
+							reason:             "ReconcileSuccess"
+							status:             "True"
+							type:               "Synced"
+						},
+						{
+							lastTransitionTime: "2023-10-28T21:20:40Z"
+							reason:             "Success"
+							status:             "True"
+							type:               "LastAsyncOperation"
+						},
+						{
+							lastTransitionTime: "2023-10-28T21:19:22Z"
 							reason:             "Finished"
 							status:             "True"
 							type:               "AsyncOperation"
@@ -354,29 +455,29 @@ _request: {
 				metadata: {
 					annotations: {
 						"crossplane.io/composition-resource-name": "main"
-						"crossplane.io/external-create-pending":   "2023-10-19T02:13:17Z"
-						"crossplane.io/external-create-succeeded": "2023-10-19T02:13:17Z"
-						"crossplane.io/external-name":             "bucket1-wnht2"
+						"crossplane.io/external-create-pending":   "2023-10-28T20:29:09Z"
+						"crossplane.io/external-create-succeeded": "2023-10-28T20:29:09Z"
+						"crossplane.io/external-name":             "bucket1-k4fvm"
 						"upjet.crossplane.io/provider-meta":       "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":1200000000000,\"delete\":3600000000000,\"read\":1200000000000,\"update\":1200000000000}}"
 					}
 					finalizers: [
 						"finalizer.managedresource.crossplane.io",
 					]
-					generateName: "bucket1-wnht2-"
+					generateName: "bucket1-k4fvm-"
 					labels: {
 						"crossplane.io/claim-name":      "bucket1"
 						"crossplane.io/claim-namespace": "claims"
-						"crossplane.io/composite":       "bucket1-wnht2"
+						"crossplane.io/composite":       "bucket1-k4fvm"
 					}
-					name: "bucket1-wnht2"
+					name: "bucket1-k4fvm"
 					ownerReferences: [
 						{
 							apiVersion:         "simple.cuefn.example.com/v1alpha1"
 							blockOwnerDeletion: true
 							controller:         true
 							kind:               "XS3Bucket"
-							name:               "bucket1-wnht2"
-							uid:                "9263eb6b-bb52-4311-8e71-80b0abecd26a"
+							name:               "bucket1-k4fvm"
+							uid:                "86cc2c8e-710d-46f9-ac96-94a29a798c08"
 						},
 					]
 				}
@@ -386,9 +487,9 @@ _request: {
 						forceDestroy: true
 						region:       "eu-west-1"
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2"
+							"crossplane-name":           "bucket1-k4fvm"
 							"crossplane-providerconfig": "default"
 						}
 					}
@@ -401,9 +502,9 @@ _request: {
 				status: {
 					atProvider: {
 						accelerationStatus:       ""
-						arn:                      "arn:aws:s3:::bucket1-wnht2"
-						bucketDomainName:         "bucket1-wnht2.s3.amazonaws.com"
-						bucketRegionalDomainName: "bucket1-wnht2.s3.eu-west-1.amazonaws.com"
+						arn:                      "arn:aws:s3:::bucket1-k4fvm"
+						bucketDomainName:         "bucket1-k4fvm.s3.amazonaws.com"
+						bucketRegionalDomainName: "bucket1-k4fvm.s3.eu-west-1.amazonaws.com"
 						forceDestroy:             true
 						grant: [
 							{
@@ -416,7 +517,7 @@ _request: {
 							},
 						]
 						hostedZoneId:      "Z1BKCTXD74EZPE"
-						id:                "bucket1-wnht2"
+						id:                "bucket1-k4fvm"
 						objectLockEnabled: false
 						policy:            ""
 						requestPayer:      "BucketOwner"
@@ -436,15 +537,15 @@ _request: {
 							},
 						]
 						tags: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2"
+							"crossplane-name":           "bucket1-k4fvm"
 							"crossplane-providerconfig": "default"
 						}
 						tagsAll: {
-							"bucket.owner":              "me"
+							"bucket.purpose":            "test-crossplane-cue-functions"
 							"crossplane-kind":           "bucket.s3.aws.upbound.io"
-							"crossplane-name":           "bucket1-wnht2"
+							"crossplane-name":           "bucket1-k4fvm"
 							"crossplane-providerconfig": "default"
 						}
 						versioning: [
@@ -456,25 +557,25 @@ _request: {
 					}
 					conditions: [
 						{
-							lastTransitionTime: "2023-10-19T02:13:36Z"
+							lastTransitionTime: "2023-10-28T20:29:27Z"
 							reason:             "Available"
 							status:             "True"
 							type:               "Ready"
 						},
 						{
-							lastTransitionTime: "2023-10-21T19:14:53Z"
+							lastTransitionTime: "2023-10-28T21:03:01Z"
 							reason:             "ReconcileSuccess"
 							status:             "True"
 							type:               "Synced"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:24Z"
+							lastTransitionTime: "2023-10-28T20:29:16Z"
 							reason:             "Success"
 							status:             "True"
 							type:               "LastAsyncOperation"
 						},
 						{
-							lastTransitionTime: "2023-10-19T02:13:24Z"
+							lastTransitionTime: "2023-10-28T20:29:16Z"
 							reason:             "Finished"
 							status:             "True"
 							type:               "AsyncOperation"
@@ -486,51 +587,65 @@ _request: {
 	}
 }
 
-// expected output
-composite: resource: status: {
-	additionalEndpoints: [
-		"bucket1-wnht2-001.s3.eu-west-1.amazonaws.com",
-		"bucket1-wnht2-002.s3.eu-west-1.amazonaws.com",
-	]
-	primaryEndpoint: "bucket1-wnht2.s3.eu-west-1.amazonaws.com"
-}
-resources: {
-	"bucket-001": {
-		ready: "READY_TRUE"
-		resource: {
-			apiVersion: "s3.aws.upbound.io/v1beta1"
-			kind:       "Bucket"
-			metadata: name: "bucket1-wnht2-001"
-			spec: forProvider: {
-				forceDestroy: true
-				region:       "eu-west-1"
-				tags: "bucket.owner": "me"
+{
+	composite: resource: status: {
+		additionalEndpoints: [
+			"bucket1-k4fvm-001.s3.eu-west-1.amazonaws.com",
+			"bucket1-k4fvm-002.s3.eu-west-1.amazonaws.com",
+		]
+		iamPolicyARN:    "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+		primaryEndpoint: "bucket1-k4fvm.s3.eu-west-1.amazonaws.com"
+	}
+	resources: {
+		"bucket-001": {
+			ready: "READY_TRUE"
+			resource: {
+				apiVersion: "s3.aws.upbound.io/v1beta1"
+				kind:       "Bucket"
+				metadata: name: "bucket1-k4fvm-001"
+				spec: forProvider: {
+					forceDestroy: true
+					region:       "eu-west-1"
+					tags: "bucket.purpose": "test-crossplane-cue-functions"
+				}
 			}
 		}
-	}
-	"bucket-002": {
-		ready: "READY_TRUE"
-		resource: {
-			apiVersion: "s3.aws.upbound.io/v1beta1"
-			kind:       "Bucket"
-			metadata: name: "bucket1-wnht2-002"
-			spec: forProvider: {
-				forceDestroy: true
-				region:       "eu-west-1"
-				tags: "bucket.owner": "me"
+		"bucket-002": {
+			ready: "READY_TRUE"
+			resource: {
+				apiVersion: "s3.aws.upbound.io/v1beta1"
+				kind:       "Bucket"
+				metadata: name: "bucket1-k4fvm-002"
+				spec: forProvider: {
+					forceDestroy: true
+					region:       "eu-west-1"
+					tags: "bucket.purpose": "test-crossplane-cue-functions"
+				}
 			}
 		}
-	}
-	main: {
-		ready: "READY_TRUE"
-		resource: {
-			apiVersion: "s3.aws.upbound.io/v1beta1"
-			kind:       "Bucket"
-			metadata: name: "bucket1-wnht2"
-			spec: forProvider: {
-				forceDestroy: true
-				region:       "eu-west-1"
-				tags: "bucket.owner": "me"
+		iam_policy: {
+			ready: "READY_TRUE"
+			resource: {
+				apiVersion: "iam.aws.upbound.io/v1beta1"
+				kind:       "Policy"
+				metadata: name: "bucket1-k4fvm-access-policy"
+				spec: forProvider: {
+					path:   "/"
+					policy: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"S3BucketAccess\",\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::bucket1-k4fvm\",\"arn:aws:s3:::bucket1-k4fvm/*\",\"arn:aws:s3:::bucket1-k4fvm-001\",\"arn:aws:s3:::bucket1-k4fvm-001/*\",\"arn:aws:s3:::bucket1-k4fvm-002\",\"arn:aws:s3:::bucket1-k4fvm-002/*\"]}]}"
+				}
+			}
+		}
+		main: {
+			ready: "READY_TRUE"
+			resource: {
+				apiVersion: "s3.aws.upbound.io/v1beta1"
+				kind:       "Bucket"
+				metadata: name: "bucket1-k4fvm"
+				spec: forProvider: {
+					forceDestroy: true
+					region:       "eu-west-1"
+					tags: "bucket.purpose": "test-crossplane-cue-functions"
+				}
 			}
 		}
 	}

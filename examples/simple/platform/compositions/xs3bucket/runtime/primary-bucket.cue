@@ -14,17 +14,7 @@ resources: {
 		}
 	}
 
-	// set its status if we see the aws resource is ready
-	let conditions = (#listWithDefault & {
-		in: _request.observed.resources.main.resource.status.conditions
-		def: {type: "Ready", status: "Unknown"}
-	}).out
-	let readyValue = [ for x in conditions if x.type == "Ready" {x.status}][0]
-	main: ready: [
-			if readyValue == "True" {ready:  "READY_TRUE"},
-			if readyValue == "False" {ready: "READY_FALSE"},
-			{ready:                          "READY_UNSPECIFIED"},
-	][0].ready
+	main: ready: (#readyValue & {in: _request.observed.resources.main.resource.status.conditions}).out
 }
 
 // set the primary endpoint on the status if found
