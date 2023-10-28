@@ -61,6 +61,8 @@ The program `xp-function-cue` provides the following subcommands:
   "_script": "script text"
 ```
 
+* `cue-test` - utility to unit test your cue implementation using inputs from various stages of the composition lifecycle.
+
 ## The cue script
 
 The cue script is a single self-contained program(*) that you provide which is compiled after it is appended with 

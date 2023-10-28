@@ -60,7 +60,7 @@ commands used in the tool package can be found near the top of the file.
 
 ## Soup to nuts
 
-* You start by defining the api you want to expose. [example](api/s3bucket.cue)
+* You start by defining the api you want to expose. [example](shared/api/s3bucket.cue)
 * You then use `cue cmd schemas` to generate the openAPI schemas corresponding to the cue types [example](shared/schemas/schemas.cue)
 * You then define an XRD pulling in the types from the schema generated in the previous step. [example](platform/xrds.cue)
 * You create the composition definition package and a runtime subpackage. 
@@ -69,9 +69,9 @@ commands used in the tool package can be found near the top of the file.
   Also it turns on debugging for the cue function pipeline such that you can see the inputs and outputs in the pod 
   logs for the cue function pod.
 * You generate a `script.cue` file using `cue cmd scripts` to complete the composition definition.
-* At this point, you can render platform objects using `cue cmd platform` and apply them using `cue cmd platform-apply`.
+* At this point, you can render platform objects using `cue platform` and apply them using `cue platform-apply`.
   You will get an XRD and composition against which you can write a claim.
-* You create a namespace and a claim using `cue cmd user-apply`. 
+* You create a namespace and a claim using `cue user-apply`. 
   This will start running the composition function and show you the inputs in the debug logs for the function pod.
 * You can now use this input to see what exactly is available and write the composition implementation.
   You can develop this incrementally focusing on one managed resource at a time and iterate over it for multiple objects.
@@ -88,6 +88,7 @@ The basic idea is get the request from the function runner and transform it to a
 
 The nice thing about cue is how it unifies pieces of an object and puts them together.
 This allows you to write a "module" (i.e. a separate file) for each resource that you want to compose. 
+
 For example, the example implementation has self-contained files, one for creating the primary bucket and setting its 
 ready state and status, one for the secondary buckets, and another for the IAM policy.
 
