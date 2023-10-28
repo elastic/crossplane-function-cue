@@ -105,7 +105,7 @@ This works as follows:
   a file called `initial.cue` will have a line called `@if(initial)` at the top of the file (*).
   This means that at any point only one file actually produces output based on the tag that is set.
 * In this test file you define the `_request` object fully (by copying it from the pod logs) and write what the
-  response to the request should be. You can copy the response from the function's pod logs as well if you have already  
+  response to the request should be. You can copy the response from the function's pod logs as well if you have already
   implemented something and have manually checked the output.
 * When you run `xp-function-cue cue-test --pkg ./runtime` it does the following:
   * creates a self-contained script from the `runtime` package just like `xp-function-cue package-script` would do.
