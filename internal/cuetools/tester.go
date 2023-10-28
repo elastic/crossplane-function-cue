@@ -20,8 +20,10 @@ package cuetools
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"cuelang.org/go/cue"
@@ -35,6 +37,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
+
+var TestOutput io.Writer = os.Stderr
 
 type TestConfig struct {
 	Package     string
@@ -69,11 +73,12 @@ func (t *Tester) init() error {
 		if err != nil {
 			return errors.Wrap(err, "discover tags")
 		}
+		sort.Strings(t.config.TestTags)
 	}
 	if len(t.config.TestTags) == 0 {
 		return fmt.Errorf("no test tags found even after auto-discovery")
 	}
-	_, _ = fmt.Fprintf(os.Stderr, "running test tags: %s\n", strings.Join(t.config.TestTags, ", "))
+	_, _ = fmt.Fprintf(TestOutput, "running test tags: %s\n", strings.Join(t.config.TestTags, ", "))
 	return nil
 }
 
@@ -167,12 +172,12 @@ func canonicalYAML(in proto.Message) (string, error) {
 }
 
 func (t *Tester) runTest(f *fn.Cue, codeBytes []byte, tag string) (finalErr error) {
-	_, _ = fmt.Fprintf(os.Stderr, "> run test %q\n", tag)
+	_, _ = fmt.Fprintf(TestOutput, "> run test %q\n", tag)
 	defer func() {
 		if finalErr != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "FAIL %s: %s\n", tag, finalErr)
+			_, _ = fmt.Fprintf(TestOutput, "FAIL %s: %s\n", tag, finalErr)
 		} else {
-			_, _ = fmt.Fprintf(os.Stderr, "PASS %s\n", tag)
+			_, _ = fmt.Fprintf(TestOutput, "PASS %s\n", tag)
 		}
 	}()
 
@@ -216,6 +221,6 @@ func (t *Tester) runTest(f *fn.Cue, codeBytes []byte, tag string) (finalErr erro
 	if err != nil {
 		return errors.Wrap(err, "diff expected against actual")
 	}
-	_, _ = fmt.Fprintf(os.Stderr, "diffs found:\n%s\n", s)
+	_, _ = fmt.Fprintf(TestOutput, "diffs found:\n%s\n", strings.TrimSpace(s))
 	return fmt.Errorf("expected did not match actual")
 }

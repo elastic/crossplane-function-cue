@@ -10,6 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v1.7.0
+	github.com/stretchr/testify v1.8.4
 	google.golang.org/protobuf v1.31.0
 	k8s.io/apimachinery v0.28.2
 	sigs.k8s.io/controller-tools v0.13.0
@@ -49,7 +50,6 @@ require (
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20230328191034-3462fbc510c0 // indirect
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tetratelabs/wazero v1.5.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect

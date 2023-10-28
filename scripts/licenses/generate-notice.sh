@@ -47,6 +47,6 @@ generate_notice() {
     )
 }
 
-echo "Generating notice file (NOTICE.txt) and dependency list (dependencies.md)"
+echo "Generating notice file (NOTICE.txt) and dependency list (DEPENDENCIES.md)"
 get_licence_detector
 generate_notice

@@ -11,7 +11,9 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/crossplane/function-sdk-go](https://github.com/crossplane/function-sdk-go) | v0.0.0-20231018091205-de1e60076bac | Apache-2.0 |
 | [github.com/ghodss/yaml](https://github.com/ghodss/yaml) | v1.0.0 | MIT |
 | [github.com/pkg/errors](https://github.com/pkg/errors) | v0.9.1 | BSD-2-Clause |
+| [github.com/pmezard/go-difflib](https://github.com/pmezard/go-difflib) | v1.0.0 | BSD-3-Clause |
 | [github.com/spf13/cobra](https://github.com/spf13/cobra) | v1.7.0 | Apache-2.0 |
+| [github.com/stretchr/testify](https://github.com/stretchr/testify) | v1.8.4 | MIT |
 | [google.golang.org/protobuf](https://google.golang.org/protobuf) | v1.31.0 | BSD-3-Clause |
 | [k8s.io/apimachinery](https://github.com/kubernetes/apimachinery) | v0.28.2 | Apache-2.0 |
 | [sigs.k8s.io/controller-tools](https://sigs.k8s.io/controller-tools) | v0.13.0 | Apache-2.0 |
@@ -70,7 +72,6 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/onsi/ginkgo](https://github.com/onsi/ginkgo) | v1.16.5 | MIT |
 | [github.com/onsi/ginkgo/v2](https://github.com/onsi/ginkgo) | v2.11.0 | MIT |
 | [github.com/onsi/gomega](https://github.com/onsi/gomega) | v1.27.10 | MIT |
-| [github.com/pmezard/go-difflib](https://github.com/pmezard/go-difflib) | v1.0.0 | BSD-3-Clause |
 | [github.com/prometheus/client_golang](https://github.com/prometheus/client_golang) | v1.16.0 | Apache-2.0 |
 | [github.com/prometheus/client_model](https://github.com/prometheus/client_model) | v0.4.0 | Apache-2.0 |
 | [github.com/prometheus/common](https://github.com/prometheus/common) | v0.44.0 | Apache-2.0 |
@@ -79,7 +80,6 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/rogpeppe/go-internal](https://github.com/rogpeppe/go-internal) | v1.11.0 | BSD-3-Clause |
 | [github.com/spf13/afero](https://github.com/spf13/afero) | v1.10.0 | Apache-2.0 |
 | [github.com/spf13/pflag](https://github.com/spf13/pflag) | v1.0.5 | BSD-3-Clause |
-| [github.com/stretchr/testify](https://github.com/stretchr/testify) | v1.8.4 | MIT |
 | [github.com/tetratelabs/wazero](https://github.com/tetratelabs/wazero) | v1.5.0 | Apache-2.0 |
 | [go.uber.org/goleak](https://go.uber.org/goleak) | v1.2.1 | MIT |
 | [go.uber.org/multierr](https://go.uber.org/multierr) | v1.11.0 | MIT |

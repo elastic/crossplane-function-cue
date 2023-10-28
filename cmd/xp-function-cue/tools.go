@@ -35,7 +35,7 @@ func openapiCommand() *cobra.Command {
 		Short: "generate self-contained openapi schemas for cue types",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			out, err := cuetools.GenerateOpenAPISchema(dir, pkg, exe)
+			out, err := cuetools.GenerateOpenAPISchema(dir, pkg)
 			if err != nil {
 				return errors.Wrap(err, "generate schemas")
 			}

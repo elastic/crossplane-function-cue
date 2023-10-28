@@ -29,7 +29,7 @@ import (
 
 // GenerateOpenAPISchema generates an openapi schema using the contents of the supplied directory
 // and returns it prefixing it with a package declaration for the supplied package.
-func GenerateOpenAPISchema(dir, pkg, generator string) ([]byte, error) {
+func GenerateOpenAPISchema(dir, pkg string) ([]byte, error) {
 	iv, err := loadSingleInstanceValue(dir, nil)
 	if err != nil {
 		return nil, err

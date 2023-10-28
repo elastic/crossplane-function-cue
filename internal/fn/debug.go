@@ -54,36 +54,29 @@ func init() {
 // walkDelete performs a recursive walk on the supplied object to remove system generated
 // attributes.
 func walkDelete(input any, parent string) {
-	m, ok := input.(map[string]any)
-	if !ok {
-		return
-	}
-	attrMap := systemAttrsLookup[parent]
-	for k, v := range m {
-		if attrMap != nil && attrMap[k] {
-			delete(m, k)
-			continue
+	switch input := input.(type) {
+	case []any:
+		for _, v := range input {
+			walkDelete(v, parent)
 		}
-		switch v := v.(type) {
-		case map[string]any:
-			walkDelete(v, k)
-		case []any:
-			for _, child := range v {
-				walkDelete(child, k)
+	case map[string]any:
+		attrMap := systemAttrsLookup[parent]
+		for k, v := range input {
+			if attrMap != nil && attrMap[k] {
+				delete(input, k)
+				continue
 			}
+			walkDelete(v, k)
 		}
 	}
 }
 
-// getDebugString modifies the supplied JSON bytes to remove k8s and crossplane generated metadata
-// and returns its serialized form as a formatted cue object for a better user experience.
-// In case of any errors, it returns the input bytes as a string.
-func (f *Cue) getDebugString(jsonBytes []byte, raw bool) string {
+func (f *Cue) reserialize(jsonBytes []byte, raw bool) ([]byte, error) {
 	var input any
 	err := json.Unmarshal(jsonBytes, &input)
 	if err != nil {
 		f.log.Info(fmt.Sprintf("JSON unmarshal error: %v", err))
-		return string(jsonBytes)
+		return jsonBytes, err
 	}
 	if !raw {
 		walkDelete(input, "")
@@ -91,12 +84,24 @@ func (f *Cue) getDebugString(jsonBytes []byte, raw bool) string {
 	b, err := json.MarshalIndent(input, "", "  ")
 	if err != nil {
 		f.log.Info(fmt.Sprintf("JSON marshal error: %v", err))
+		return jsonBytes, err
+	}
+	return b, nil
+}
+
+// getDebugString modifies the supplied JSON bytes to remove k8s and crossplane generated metadata
+// and returns its serialized form as a formatted cue object for a better user experience.
+// In case of any errors, it returns the input bytes as a string.
+func (f *Cue) getDebugString(jsonBytes []byte, raw bool) string {
+	var err error
+	jsonBytes, err = f.reserialize(jsonBytes, raw)
+	if err != nil {
 		return string(jsonBytes)
 	}
-	out, err := format.Source(b, format.Simplify(), format.TabIndent(false), format.UseSpaces(2))
+	out, err := format.Source(jsonBytes, format.Simplify(), format.TabIndent(false), format.UseSpaces(2))
 	if err != nil {
 		f.log.Info(fmt.Sprintf("cue formatting error: %v", err))
-		return string(b)
+		return string(jsonBytes)
 	}
 	return string(out)
 }
