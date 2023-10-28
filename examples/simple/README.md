@@ -34,9 +34,9 @@ This example goes overboard to define _everything_, include the `Makefile`, in c
 * [platform](platform/) - contains the resources for the "platform implementation" - i.e. the XRDs, function definitions,
   composition definitions and their implementation.
     * [compositions](platform/compositions/) - returns an aggregate of composition objects
-      * &lt;resource&gt; - a specific composition resource [example](platform/compositions/xs3bucket/)
-        * runtime/ - the implementation of the composition function for the resource 
-          * tests/ - unit tests for the composition function at various stages of the managed object lifecycle 
+      * [xs3bucket](platform/compositions/xs3bucket/) - a specific composition definition
+        * [runtime/](platform/compositions/xs3bucket/runtime) - the implementation of the composition function for the resource
+          * [tests/](platform/compositions/xs3bucket/runtime/tests) - unit tests for the composition function at various stages of the managed object lifecycle
 * [user](user/) - the "user" objects like namespaces and test claims.
 
 In addition:
