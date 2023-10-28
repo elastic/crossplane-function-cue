@@ -7,9 +7,9 @@ package v1
 // CompositionValidatingWebhookPath is the path for the Composition's validating webhook, should be kept in sync with the annotation above.
 #CompositionValidatingWebhookPath: "/validate-apiextensions-crossplane-io-v1-composition"
 
-// CompositionValidationModeAnnotation is the annotation that can be used to specify the validation mode for a Composition.
-#CompositionValidationModeAnnotation:     "crossplane.io/composition-validation-mode"
-_#errFmtInvalidCompositionValidationMode: "invalid composition validation mode: %s"
+// SchemaAwareCompositionValidationModeAnnotation is the annotation that can be used to specify the schema-aware validation mode for a Composition.
+#SchemaAwareCompositionValidationModeAnnotation: "crossplane.io/composition-schema-aware-validation-mode"
+_#errFmtInvalidCompositionValidationMode:        "invalid schema-aware composition validation mode: %s"
 
 // CompositionValidationMode is the validation mode for a Composition.
 #CompositionValidationMode: string
