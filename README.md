@@ -55,17 +55,15 @@ The program `xp-function-cue` provides the following subcommands:
 
 * `server` - used by the docker image to run the function implementation
 * `openapi` - utility that converts a cue type into an openAPI schema that has self-contained types.
-* `package-script` - utility that takes a cue package and turns it into a self-contained script of the form:
+* `package-script` - utility that takes a cue package and turns it into a self-contained cue script of the form:
 
 ```
-{
-    "_script": "script text"
-}
+  "_script": "script text"
 ```
 
 ## The cue script
 
-The cue script is a single self-contained program(*) that you provide which is compiled after it is concatenated with 
+The cue script is a single self-contained program(*) that you provide which is compiled after it is appended with 
 additional cue code that looks like the following:
 
 ```
