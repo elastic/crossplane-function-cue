@@ -13,7 +13,7 @@ _objects: cuefn: xp.#Function & {
 		name: gvk.function.name
 	}
 	spec: {
-		package:           gvk.function.image
+		package:           string | *"gotwarlost/crossplane-function-cue:latest" @tag(image)
 		packagePullPolicy: "Always"
 	}
 }

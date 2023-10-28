@@ -16,5 +16,4 @@ s3Bucket: {
 
 function: {
 	name:  "fn-cue-examples-simple"
-	image: "gotwarlost/crossplane-function-cue:latest"
 }

@@ -47,24 +47,27 @@ func openapiCommand() *cobra.Command {
 		},
 	}
 	flags := c.Flags()
-	flags.StringVar(&pkg, "package", "schemas", "package name of generated cue file")
+	flags.StringVar(&pkg, "pkg", "schemas", "package name of generated cue file")
 	flags.StringVar(&dir, "dir", ".", "directory containing cue type definitions")
 	flags.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
 	return c
 }
 
 func packageScriptCommand() *cobra.Command {
-	var pkg, dir, outFile string
+	var pkg, dir, outFile, out string
 	c := &cobra.Command{
 		Use:   "package-script",
 		Short: "generate a self-contained script as text",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			out, err := cuetools.PackageScript(dir, pkg, exe)
+			out, err := cuetools.PackageScript(dir, cuetools.PackageScriptOpts{
+				OutputPackage: pkg,
+				Format:        cuetools.OutputFormat(out),
+			})
 			if err != nil {
 				return errors.Wrap(err, "generate schemas")
 			}
-			if outFile == "" || outFile == "." {
+			if outFile == "" || outFile == "-" {
 				fmt.Println(string(out))
 				return nil
 			}
@@ -72,9 +75,10 @@ func packageScriptCommand() *cobra.Command {
 		},
 	}
 	flags := c.Flags()
-	flags.StringVar(&pkg, "package", "", "package name of generated cue file")
+	flags.StringVar(&pkg, "pkg", "", "package name of generated cue file")
 	flags.StringVar(&dir, "dir", ".", "directory containing cue type definitions")
 	flags.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
+	flags.StringVarP(&out, "output", "o", string(cuetools.FormatCue), "output format, one of cue or raw")
 	return c
 }
 
@@ -108,7 +112,7 @@ func extractSchemaCommand() *cobra.Command {
 		},
 	}
 	flags := c.Flags()
-	flags.StringVar(&pkg, "package", "", "package name of generated cue file")
+	flags.StringVar(&pkg, "pkg", "", "package name of generated cue file")
 	flag.StringVar(&file, "file", "-", "input JSON or YAML file containing a single CRD/ XRD definition, defaults to stdin")
 	flags.StringVar(&outFile, "out-file", "", "output file name, defaults to stdout")
 	return c
