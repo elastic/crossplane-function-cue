@@ -33,7 +33,7 @@ resources: {
 	}
 }
 
-let endpoints = [
+let endpoints0 = [
 	for s in _suffixes {
 		let bucketName = "bucket\(s)"
 		[
@@ -45,4 +45,8 @@ let endpoints = [
 	},
 ]
 
-composite: resource: status: additionalEndpoints: endpoints
+let endpoints1 =[ for e in endpoints0 if e != "unknown" {e} ]
+
+if len(endpoints1) == len(_suffixes) && len(_suffixes) > 0 {
+	composite: resource: status: additionalEndpoints: endpoints1
+}

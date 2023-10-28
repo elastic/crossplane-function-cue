@@ -112,10 +112,3 @@ resources: {
 		ready: "READY_UNSPECIFIED"
 	}
 }
-composite: {
-	resource: {
-		status: {
-			additionalEndpoints: ["unknown", "unknown"]
-		}
-	}
-}

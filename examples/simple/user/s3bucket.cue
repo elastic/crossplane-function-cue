@@ -17,7 +17,7 @@ _objects: s3Bucket: {
 		region: "eu-west-1"
 		additionalSuffixes: [ "-001", "-002"]
 		tags: {
-			"bucket.owner": "me"
+			"bucket.purpose": "test-crossplane-cue-functions"
 		}
 	}
 }
