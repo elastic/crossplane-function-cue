@@ -6,12 +6,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # copy and compile code
+COPY .git/ ./.git/
 COPY cmd/ ./cmd/
 COPY internal/ ./internal/
 COPY pkg/ ./pkg/
 COPY package/ ./package/
-RUN CGO_ENABLED=0 go generate ./...
-RUN CGO_ENABLED=0  go install ./cmd/xp-function-cue
+COPY Makefile ./
+RUN make build
 
 FROM busybox:latest as packager
 WORKDIR /package

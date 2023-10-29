@@ -28,13 +28,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func checkNoArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > 0 {
+		return fmt.Errorf("no arguments are expected for this command: found %v", args)
+	}
+	cmd.SilenceUsage = true
+	return nil
+}
+
 func openapiCommand() *cobra.Command {
 	var pkg, dir, outFile string
 	c := &cobra.Command{
 		Use:   "openapi",
 		Short: "generate self-contained openapi schemas for cue types",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
+			if err := checkNoArgs(cmd, args); err != nil {
+				return err
+			}
 			out, err := cuetools.GenerateOpenAPISchema(dir, pkg)
 			if err != nil {
 				return errors.Wrap(err, "generate schemas")
@@ -59,7 +69,9 @@ func packageScriptCommand() *cobra.Command {
 		Use:   "package-script",
 		Short: "generate a self-contained script as text",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
+			if err := checkNoArgs(cmd, args); err != nil {
+				return err
+			}
 			out, err := cuetools.PackageScript(dir, cuetools.PackageScriptOpts{
 				OutputPackage: pkg,
 				Format:        cuetools.OutputFormat(out),
@@ -88,7 +100,9 @@ func extractSchemaCommand() *cobra.Command {
 		Use:   "extract-schema",
 		Short: "extract a cue schema from the openAPI spec of a CRD/XRD object",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
+			if err := checkNoArgs(cmd, args); err != nil {
+				return err
+			}
 			var reader io.Reader
 			if file == "" || file == "-" {
 				reader = os.Stdin
@@ -124,7 +138,9 @@ func cueTestCommand() *cobra.Command {
 		Use:   "cue-test",
 		Short: "run unit tests for your composition implementation",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cmd.SilenceUsage = true
+			if err := checkNoArgs(cmd, args); err != nil {
+				return err
+			}
 			tester, err := cuetools.NewTester(p)
 			if err != nil {
 				return err

@@ -33,6 +33,7 @@ func main() {
 		packageScriptCommand(),
 		extractSchemaCommand(),
 		cueTestCommand(),
+		versionCommand(),
 	)
 	if err := root.Execute(); err != nil {
 		os.Exit(1)
