@@ -18,9 +18,9 @@
 image?=gotwarlost/crossplane-function-cue
 
 build_date:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-commit:=$(shell git rev-parse --short HEAD)
-version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || git symbolic-ref -q --short HEAD || latest)
-ldflags:=-X 'main.BuildDate=$(build_date)' -X 'main.Commit=$(commit)' -X 'main.Version=$(version)'
+commit:=$(shell git rev-parse --short HEAD 2> /dev/null)
+version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || echo latest)
+ldflags?=-X 'main.BuildDate=$(build_date)' -X 'main.Commit=$(commit)' -X 'main.Version=$(version)'
 
 .PHONY: local
 local: build test lint
@@ -46,9 +46,13 @@ test:
 lint: .bin/golangci-lint
 	./.bin/golangci-lint run
 
+.PHONY: docker-build
+docker-build:
+	docker build --tag $(image):$(version) --build-arg "ldflags=$(ldflags)" .
+
 .PHONY: docker
 docker:
-	docker build --tag $(image):$(version) .
+	make -C . docker-build
 
 .PHONY: docker-push
 docker-push: docker
