@@ -62,3 +62,6 @@ docker-push: docker
 fmt: .bin/gofumpt
 	./.bin/gofumpt -w .
 
+.PHONY: ci
+ci: local
+

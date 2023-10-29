@@ -1,0 +1,44 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  build-linux:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - id: go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21
+      - id: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - id: cache
+        uses: actions/cache@v2
+        with:
+          # In order:
+          # * Module download cache
+          # * Build cache (Linux)
+          # * Build cache (Mac)
+          # * Build cache (Windows)
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+            %LocalAppData%\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Install command dependencies
+        run: |
+          mkdir -p $HOME/go/bin
+          export GOPATH=$HOME/go
+          echo "GOPATH=$GOPATH" >> $GITHUB_ENV
+          echo "GO_VERSION=$(go version | awk '{ print $3}' | sed 's/^go//')" >> $GITHUB_ENV
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+          make ci
+          xp-function-cue version        
