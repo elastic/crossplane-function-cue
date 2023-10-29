@@ -18,7 +18,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -36,43 +35,50 @@ func checkNoArgs(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func checkOneArg(cmd *cobra.Command, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("exactly one argument is expected for this command, got %d,  %v", len(args), args)
+	}
+	cmd.SilenceUsage = true
+	return nil
+}
+
 func openapiCommand() *cobra.Command {
-	var pkg, dir, outFile string
+	var pkg, outFile string
 	c := &cobra.Command{
-		Use:   "openapi",
-		Short: "generate self-contained openapi schemas for cue types",
+		Use:   "openapi ./path/to/package/dir",
+		Short: "generate self-contained openapi schemas for cue types from a cue package",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := checkNoArgs(cmd, args); err != nil {
+			if err := checkOneArg(cmd, args); err != nil {
 				return err
 			}
-			out, err := cuetools.GenerateOpenAPISchema(dir, pkg)
+			out, err := cuetools.GenerateOpenAPISchema(args[0], pkg)
 			if err != nil {
 				return errors.Wrap(err, "generate schemas")
 			}
-			if outFile == "" || outFile == "." {
+			if outFile == "" || outFile == "-" {
 				fmt.Println(string(out))
 				return nil
 			}
 			return os.WriteFile(outFile, out, 0o644)
 		},
 	}
-	flags := c.Flags()
-	flags.StringVar(&pkg, "pkg", "schemas", "package name of generated cue file")
-	flags.StringVar(&dir, "dir", ".", "directory containing cue type definitions")
-	flags.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
+	f := c.Flags()
+	f.StringVar(&pkg, "pkg", "schemas", "package name of generated cue file")
+	f.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
 	return c
 }
 
 func packageScriptCommand() *cobra.Command {
-	var pkg, dir, outFile, out string
+	var pkg, outFile, out string
 	c := &cobra.Command{
-		Use:   "package-script",
+		Use:   "package-script ./path/to/package/dir",
 		Short: "generate a self-contained script as text",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := checkNoArgs(cmd, args); err != nil {
+			if err := checkOneArg(cmd, args); err != nil {
 				return err
 			}
-			out, err := cuetools.PackageScript(dir, cuetools.PackageScriptOpts{
+			out, err := cuetools.PackageScript(args[0], cuetools.PackageScriptOpts{
 				OutputPackage: pkg,
 				Format:        cuetools.OutputFormat(out),
 			})
@@ -86,11 +92,10 @@ func packageScriptCommand() *cobra.Command {
 			return os.WriteFile(outFile, out, 0o644)
 		},
 	}
-	flags := c.Flags()
-	flags.StringVar(&pkg, "pkg", "", "package name of generated cue file")
-	flags.StringVar(&dir, "dir", ".", "directory containing cue type definitions")
-	flags.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
-	flags.StringVarP(&out, "output", "o", string(cuetools.FormatCue), "output format, one of cue or raw")
+	f := c.Flags()
+	f.StringVar(&pkg, "pkg", "", "package name of generated cue file")
+	f.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
+	f.StringVarP(&out, "output", "o", string(cuetools.FormatCue), "output format, one of cue or raw")
 	return c
 }
 
@@ -125,22 +130,23 @@ func extractSchemaCommand() *cobra.Command {
 			return os.WriteFile(outFile, out, 0o644)
 		},
 	}
-	flags := c.Flags()
-	flags.StringVar(&pkg, "pkg", "", "package name of generated cue file")
-	flag.StringVar(&file, "file", "-", "input JSON or YAML file containing a single CRD/ XRD definition, defaults to stdin")
-	flags.StringVar(&outFile, "out-file", "", "output file name, defaults to stdout")
+	f := c.Flags()
+	f.StringVar(&pkg, "pkg", "", "package name of generated cue file")
+	f.StringVar(&file, "file", "-", "input JSON or YAML file containing a single CRD/ XRD definition, defaults to stdin")
+	f.StringVar(&outFile, "out-file", "", "output file name, defaults to stdout")
 	return c
 }
 
 func cueTestCommand() *cobra.Command {
 	var p cuetools.TestConfig
 	c := &cobra.Command{
-		Use:   "cue-test",
+		Use:   "cue-test ./path/to/package/dir",
 		Short: "run unit tests for your composition implementation",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := checkNoArgs(cmd, args); err != nil {
+			if err := checkOneArg(cmd, args); err != nil {
 				return err
 			}
+			p.Package = args[0]
 			tester, err := cuetools.NewTester(p)
 			if err != nil {
 				return err
@@ -148,10 +154,9 @@ func cueTestCommand() *cobra.Command {
 			return tester.Run()
 		},
 	}
-	flags := c.Flags()
-	flags.StringSliceVar(&p.TestTags, "test-tag", nil, "list of test tags to enable, one per test")
-	flags.StringVar(&p.Package, "pkg", ".", "relative path to implementation package")
-	flags.StringVar(&p.TestPackage, "test-pkg", "", "relative path to test package")
-	flags.BoolVar(&p.Debug, "debug", false, "enable eval debugging")
+	f := c.Flags()
+	f.StringSliceVar(&p.TestTags, "tag", nil, "list of test tags to enable, one per test")
+	f.StringVar(&p.TestPackage, "test-dir", "", "relative path to test package, defaults to a tests subdirectory under the package")
+	f.BoolVar(&p.Debug, "debug", false, "enable eval debugging")
 	return c
 }

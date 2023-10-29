@@ -30,18 +30,18 @@ cmds: testList: list.FlattenN([
 	for c in compositions {
 		[
 			"echo ' >' test: \(c)",
-			"xp-function-cue cue-test --pkg ./platform/compositions/\(c)/runtime",
+			"xp-function-cue cue-test ./platform/compositions/\(c)/runtime",
 		]
 	},
 ], 1)
 
 cmds: scriptList: list.FlattenN([
 	for c in compositions {
-		["xp-function-cue package-script --pkg \(c) --out-file ./platform/compositions/\(c)/script.cue --dir ./platform/compositions/\(c)/runtime"]
+		["xp-function-cue package-script --pkg \(c) --out-file ./platform/compositions/\(c)/script.cue ./platform/compositions/\(c)/runtime"]
 	},
 ], 1)
 
-cmds: schemaGen:      "xp-function-cue openapi --dir=./shared/api --pkg schemas --out-file=./shared/schemas/schemas.cue"
+cmds: schemaGen:      "xp-function-cue openapi --pkg schemas --out-file=./shared/schemas/schemas.cue ./shared/api"
 cmds: renderPlatform: "cue eval --out text -e yaml.MarshalStream(resources) -t image=\(image):\(version) ./platform/"
 cmds: renderUser:     "cue eval --out text -e yaml.MarshalStream(resources) -t namespace=\(ns) ./user/"
 cmds: k8sApply:       "kubectl apply --context=\(k8sContext) -f -"
