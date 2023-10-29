@@ -35,7 +35,7 @@ get_licence_detector() {
 generate_notice() {
     (
         cd "$PROJECT_DIR"
-        go mod download
+        go mod download all
         go list -m -json all | "${TEMP_DIR}"/go-licence-detector \
             -depsTemplate="${SCRIPT_DIR}"/templates/dependencies.md.tmpl \
             -depsOut="${PROJECT_DIR}"/DEPENDENCIES.md \
@@ -44,6 +44,7 @@ generate_notice() {
             -overrides="${SCRIPT_DIR}"/overrides/overrides.json \
             -rules="${SCRIPT_DIR}"/rules.json \
             -includeIndirect
+        go mod tidy # undo the pollution of go.sum because of go mod download all
     )
 }
 
