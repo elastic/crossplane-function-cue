@@ -15,6 +15,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/spf13/cobra](https://github.com/spf13/cobra) | v1.7.0 | Apache-2.0 |
 | [github.com/stretchr/testify](https://github.com/stretchr/testify) | v1.8.4 | MIT |
 | [google.golang.org/protobuf](https://google.golang.org/protobuf) | v1.31.0 | BSD-3-Clause |
+| [gopkg.in/yaml.v3](https://gopkg.in/yaml.v3) | v3.0.1 | MIT |
 | [k8s.io/apimachinery](https://github.com/kubernetes/apimachinery) | v0.28.3 | Apache-2.0 |
 | [sigs.k8s.io/controller-tools](https://sigs.k8s.io/controller-tools) | v0.13.0 | Apache-2.0 |
 
@@ -29,6 +30,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/cespare/xxhash/v2](https://github.com/cespare/xxhash) | v2.2.0 | MIT |
 | [github.com/cockroachdb/apd/v3](https://github.com/cockroachdb/apd) | v3.2.0 | Apache-2.0 |
 | [github.com/davecgh/go-spew](https://github.com/davecgh/go-spew) | v1.1.1 | ISC |
+| [github.com/emicklei/go-restful/v3](https://github.com/emicklei/go-restful) | v3.11.0 | MIT |
 | [github.com/emicklei/proto](https://github.com/emicklei/proto) | v1.10.0 | MIT |
 | [github.com/evanphx/json-patch/v5](https://github.com/evanphx/json-patch) | v5.6.0 | BSD-3-Clause |
 | [github.com/fatih/color](https://github.com/fatih/color) | v1.15.0 | MIT |
@@ -83,6 +85,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [go.uber.org/goleak](https://go.uber.org/goleak) | v1.2.1 | MIT |
 | [go.uber.org/multierr](https://go.uber.org/multierr) | v1.11.0 | MIT |
 | [go.uber.org/zap](https://go.uber.org/zap) | v1.26.0 | MIT |
+| [golang.org/x/exp](https://golang.org/x/exp) | v0.0.0-20231006140011-7918f672742d | BSD-3-Clause |
 | [golang.org/x/mod](https://golang.org/x/mod) | v0.13.0 | BSD-3-Clause |
 | [golang.org/x/net](https://golang.org/x/net) | v0.17.0 | BSD-3-Clause |
 | [golang.org/x/oauth2](https://golang.org/x/oauth2) | v0.11.0 | BSD-3-Clause |
@@ -100,10 +103,14 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [gopkg.in/inf.v0](https://gopkg.in/inf.v0) | v0.9.1 | BSD-3-Clause |
 | [gopkg.in/tomb.v1](https://gopkg.in/tomb.v1) | v1.0.0-20141024135613-dd632973f1e7 | BSD-3-Clause |
 | [gopkg.in/yaml.v2](https://gopkg.in/yaml.v2) | v2.4.0 | Apache-2.0 |
-| [gopkg.in/yaml.v3](https://gopkg.in/yaml.v3) | v3.0.1 | MIT |
+| [k8s.io/api](https://github.com/kubernetes/api) | v0.28.3 | Apache-2.0 |
+| [k8s.io/apiextensions-apiserver](https://github.com/kubernetes/apiextensions-apiserver) | v0.28.3 | Apache-2.0 |
+| [k8s.io/client-go](https://github.com/kubernetes/client-go) | v0.28.3 | Apache-2.0 |
+| [k8s.io/component-base](https://github.com/kubernetes/component-base) | v0.28.3 | Apache-2.0 |
 | [k8s.io/klog/v2](https://github.com/kubernetes/klog) | v2.100.1 | Apache-2.0 |
 | [k8s.io/kube-openapi](https://github.com/kubernetes/kube-openapi) | v0.0.0-20230717233707-2695361300d9 | Apache-2.0 |
 | [k8s.io/utils](https://github.com/kubernetes/utils) | v0.0.0-20230505201702-9f6742963106 | Apache-2.0 |
+| [sigs.k8s.io/controller-runtime](https://sigs.k8s.io/controller-runtime) | v0.16.3 | Apache-2.0 |
 | [sigs.k8s.io/json](https://sigs.k8s.io/json) | v0.0.0-20221116044647-bc3834ca7abd | Apache-2.0 |
 | [sigs.k8s.io/structured-merge-diff/v4](https://sigs.k8s.io/structured-merge-diff/v4) | v4.2.3 | Apache-2.0 |
 | [sigs.k8s.io/yaml](https://sigs.k8s.io/yaml) | v1.4.0 | Apache-2.0 |
