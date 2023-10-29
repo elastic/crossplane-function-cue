@@ -65,3 +65,11 @@ fmt: .bin/gofumpt
 .PHONY: ci
 ci: local
 
+.PHONY: ci-print-ldflags
+ci-print-ldflags:
+	@echo $(ldflags)
+
+.PHONY: ci-check-dirty
+ci-check-dirty:
+	git status || true
+	git diff --quiet || (echo 'dirty files found' && exit 1)
