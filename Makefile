@@ -16,11 +16,10 @@
 # under the License.
 
 image?=gotwarlost/crossplane-function-cue
-version?=latest
 
 build_date:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 commit:=$(shell git rev-parse --short HEAD)
-version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || git symbolic-ref -q --short HEAD )
+version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || git symbolic-ref -q --short HEAD || latest)
 ldflags:=-X 'main.BuildDate=$(build_date)' -X 'main.Commit=$(commit)' -X 'main.Version=$(version)'
 
 .PHONY: local
