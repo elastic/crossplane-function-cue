@@ -11,6 +11,7 @@ A crossplane function that runs cue scripts for composing resources.
 ![check license headers](https://github.com/elastic/crossplane-function-cue/actions/workflows/check-license-headers.yaml/badge.svg?branch=main)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/elastic/crossplane-function-cue)](https://goreportcard.com/report/github.com/elastic/crossplane-function-cue)
+[![Go Coverage](https://github.com/elastic/crossplane-function-cue/wiki/coverage.svg)](https://raw.githack.com/wiki/elastic/crossplane-function-cue/coverage.html)
 
 ## Building
 
