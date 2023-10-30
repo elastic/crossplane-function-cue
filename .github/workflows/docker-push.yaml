@@ -1,0 +1,35 @@
+name: docker push
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - main
+jobs:
+  docker-push:
+    name: build and push docker image
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+      - name: setup
+        run: |
+          LDFLAGS="$(make ci-print-ldflags)"
+          VERSION="$(make ci-print-version)"
+          echo "LDFLAGS=${LDFLAGS}">>$GITHUB_ENV
+          echo "VERSION=${VERSION}">>$GITHUB_ENV
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: docker build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          build-args:
+            ldflags=${{ env.LDFLAGS }}
+          tags:
+            gotwarlost/crossplane-function-cue:${{ env.VERSION }}
