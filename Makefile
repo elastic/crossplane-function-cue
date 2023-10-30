@@ -69,6 +69,10 @@ ci: local
 ci-print-ldflags:
 	@echo $(ldflags)
 
+.PHONY: ci-print-version
+ci-print-version:
+	@echo $(version)
+
 .PHONY: ci-check-dirty
 ci-check-dirty:
 	git status || true
