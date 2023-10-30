@@ -19,6 +19,7 @@ package cuetools
 
 import (
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 
@@ -35,11 +36,24 @@ func getOutput() (_ *bytes.Buffer, reset func()) {
 	}
 }
 
+func chdirCueRoot(t *testing.T) func() {
+	old, err := os.Getwd()
+	require.NoError(t, err)
+	err = os.Chdir("testdata")
+	require.NoError(t, err)
+	return func() {
+		err = os.Chdir(old)
+		require.NoError(t, err)
+	}
+}
+
 func TestTester(t *testing.T) {
+	fn := chdirCueRoot(t)
+	defer fn()
 	buf, reset := getOutput()
 	defer reset()
 	tester, err := NewTester(TestConfig{
-		Package: "./testdata/runtime",
+		Package: "./runtime",
 	})
 	require.NoError(t, err)
 	err = tester.Run()
@@ -65,24 +79,28 @@ FAIL incorrect: expected did not match actual
 }
 
 func TestTesterBadTag(t *testing.T) {
+	fn := chdirCueRoot(t)
+	defer fn()
 	buf, reset := getOutput()
 	defer reset()
 	tester, err := NewTester(TestConfig{
-		Package:  "./testdata/runtime",
+		Package:  "./runtime",
 		TestTags: []string{"foo"},
 	})
 	require.NoError(t, err)
 	err = tester.Run()
 	require.Error(t, err)
 	assert.Equal(t, "1 of 1 tests had errors", err.Error())
-	assert.Contains(t, buf.String(), "FAIL foo: evaluate expected: load instance: build constraints exclude all CUE files in ./testdata/runtime/tests")
+	assert.Contains(t, buf.String(), "FAIL foo: evaluate expected: load instance: build constraints exclude all CUE files in ./runtime/tests")
 }
 
 func TestTesterAllPass(t *testing.T) {
+	fn := chdirCueRoot(t)
+	defer fn()
 	buf, reset := getOutput()
 	defer reset()
 	tester, err := NewTester(TestConfig{
-		Package:  "./testdata/runtime",
+		Package:  "./runtime",
 		TestTags: []string{"correct"},
 	})
 	require.NoError(t, err)
