@@ -23,6 +23,6 @@ jobs:
         uses: ncruces/go-coverage-report@v0
         with:
           coverage-file: cover.out
-          amend: true
+          amend: false
           reuse-go: true
         continue-on-error: true
