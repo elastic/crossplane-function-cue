@@ -1,0 +1,75 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xs3buckets.simple.cuefn.example.com
+spec:
+  claimNames:
+    kind: S3Bucket
+    plural: s3buckets
+  defaultCompositeDeletePolicy: Background
+  defaultCompositionUpdatePolicy: Automatic
+  group: simple.cuefn.example.com
+  names:
+    kind: XS3Bucket
+    plural: xs3buckets
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .status.primaryEndpoint
+          name: primary endpoint
+          type: string
+        - jsonPath: .status.iamPolicyARN
+          name: iam policy ARN
+          type: string
+      name: v1alpha1
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          description: allow creation of one of more S3 buckets
+          properties:
+            spec:
+              description: desired state
+              properties:
+                parameters:
+                  description: bucket creation parameters
+                  properties:
+                    additionalSuffixes:
+                      description: additional buckets to create with the suffixes provided
+                      items:
+                        maxLength: 4
+                        minLength: 1
+                        type: string
+                      type: array
+                    region:
+                      description: bucket region
+                      type: string
+                    tags:
+                      additionalProperties:
+                        type: string
+                      description: tags to associate with all buckets
+                      type: object
+                  required:
+                    - region
+                  type: object
+              required:
+                - parameters
+              type: object
+            status:
+              description: observed status
+              properties:
+                additionalEndpoints:
+                  description: additional endpoints in the same order as additional
+                    suffixes
+                  items:
+                    type: string
+                  type: array
+                iamPolicyARN:
+                  description: the ARN of the IAM policy created for accessing the buckets
+                  type: string
+                primaryEndpoint:
+                  description: the URL of the bucket endpoint
+                  type: string
+              type: object
+          required:
+            - spec
+          type: object
+      served: true
