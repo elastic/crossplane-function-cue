@@ -4,8 +4,8 @@ go 1.21
 
 require (
 	cuelang.org/go v0.6.0
-	github.com/crossplane/crossplane-runtime v1.14.0-rc.1
-	github.com/crossplane/function-sdk-go v0.0.0-20231027134439-0745c2a72577
+	github.com/crossplane/crossplane-runtime v1.14.0
+	github.com/crossplane/function-sdk-go v0.1.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
@@ -25,7 +25,8 @@ require (
 	github.com/emicklei/proto v1.10.0 // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fatih/color v1.15.0 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-json-experiment/json v0.0.0-20231013223334-54c864be5b8d // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/zapr v1.2.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
@@ -72,7 +73,7 @@ require (
 	k8s.io/client-go v0.28.3 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230717233707-2695361300d9 // indirect
-	k8s.io/utils v0.0.0-20230505201702-9f6742963106 // indirect
+	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
 	sigs.k8s.io/controller-runtime v0.16.3 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
