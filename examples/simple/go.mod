@@ -3,7 +3,7 @@ module example-simple
 go 1.21
 
 require (
-	github.com/crossplane/crossplane v1.15.0-rc.0.0.20231027222357-83c5887d515f
+	github.com/crossplane/crossplane v1.14.0
 	github.com/elastic/crossplane-function-cue v0.0.0-20231025052718-bec8f1a876dc
 	k8s.io/api v0.28.3
 )

@@ -55,6 +55,8 @@ github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGX
 github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
+github.com/crossplane/crossplane v1.14.0 h1:cfq1WXYQNl/O1/B+VK34cUziN24kJYgQ4z/2/O0moGs=
+github.com/crossplane/crossplane v1.14.0/go.mod h1:3gHjPrttSWmVbq39OM6SCUAzsc8CV7HMW/3X2hkY3E4=
 github.com/crossplane/crossplane v1.15.0-rc.0.0.20231027222357-83c5887d515f h1:40ssYkykmpHwWdsndLc4pWv6dtxfCdsuqBZECkhqygs=
 github.com/crossplane/crossplane v1.15.0-rc.0.0.20231027222357-83c5887d515f/go.mod h1:HUZACR0i+RNvY32VVBTi8QQPLBezz9svtBSlNWL7I5o=
 github.com/crossplane/crossplane-runtime v1.15.0-rc.0 h1:JwcYj3zrhm7u6YQSwHWa03T0rWkO3cIA1mp7h6ezzf0=
