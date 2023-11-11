@@ -24,6 +24,8 @@ import (
 	"cuelang.org/go/cue/format"
 )
 
+const connectionDetailsKey = "connectionDetails"
+
 // start debugging routines
 
 // noise that people typically wouldn't want to see when looking at inputs.
@@ -60,6 +62,11 @@ func walkDelete(input any, parent string) {
 			walkDelete(v, parent)
 		}
 	case map[string]any:
+		if parent == connectionDetailsKey {
+			for k := range input {
+				input[k] = "<redacted>"
+			}
+		}
 		attrMap := systemAttrsLookup[parent]
 		for k, v := range input {
 			if attrMap != nil && attrMap[k] {
