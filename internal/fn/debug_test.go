@@ -28,6 +28,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func yaml2Object(t *testing.T, s string) any {
+	var data any
+	err := yaml.Unmarshal([]byte(s), &data)
+	require.NoError(t, err)
+	return data
+}
+
 func TestDebugRemoveNoise(t *testing.T) {
 	f, err := New(Options{})
 	require.NoError(t, err)
@@ -55,21 +62,15 @@ func TestDebugRemoveNoise(t *testing.T) {
   data:
     foo: bar
 `
-	yaml2Object := func(s string) any {
-		var data any
-		err := yaml.Unmarshal([]byte(s), &data)
-		require.NoError(t, err)
-		return data
-	}
-	input := yaml2Object(inputYAML)
-	cleaned := yaml2Object(cleanedYAML)
+	input := yaml2Object(t, inputYAML)
+	cleaned := yaml2Object(t, cleanedYAML)
 	inBytes, err := json.MarshalIndent(input, "", "  ")
 	require.NoError(t, err)
 
 	t.Run("re-serialize clean", func(t *testing.T) {
 		out, err := f.reserialize(inBytes, false)
 		require.NoError(t, err)
-		actual := yaml2Object(string(out))
+		actual := yaml2Object(t, string(out))
 		assert.EqualValues(t, cleaned, actual)
 	})
 
@@ -80,14 +81,14 @@ func TestDebugRemoveNoise(t *testing.T) {
 		require.NoError(t, val.Err())
 		b, err := val.MarshalJSON()
 		require.NoError(t, err)
-		actual := yaml2Object(string(b))
+		actual := yaml2Object(t, string(b))
 		assert.EqualValues(t, cleaned, actual)
 	})
 
 	t.Run("re-serialize raw", func(t *testing.T) {
 		out, err := f.reserialize(inBytes, true)
 		require.NoError(t, err)
-		actual := yaml2Object(string(out))
+		actual := yaml2Object(t, string(out))
 		assert.EqualValues(t, input, actual)
 	})
 
@@ -98,9 +99,48 @@ func TestDebugRemoveNoise(t *testing.T) {
 		require.NoError(t, val.Err())
 		b, err := val.MarshalJSON()
 		require.NoError(t, err)
-		actual := yaml2Object(string(b))
+		actual := yaml2Object(t, string(b))
 		assert.EqualValues(t, input, actual)
 	})
+}
+
+func TestDebugRemoveConnectionDetails(t *testing.T) {
+	f, err := New(Options{})
+	require.NoError(t, err)
+	inputYAML := `
+- resource:
+    resource: 
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: foobar
+      data:
+        foo: bar
+    connectionDetails:
+      secret1: super-secret
+      secret2: even-more-secret
+`
+	cleanedYAML := `
+- resource:
+    resource: 
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: foobar
+      data:
+        foo: bar
+    connectionDetails:
+      secret1: <redacted>
+      secret2: <redacted>
+`
+	input := yaml2Object(t, inputYAML)
+	cleaned := yaml2Object(t, cleanedYAML)
+	inBytes, err := json.MarshalIndent(input, "", "  ")
+	require.NoError(t, err)
+	out, err := f.reserialize(inBytes, false)
+	require.NoError(t, err)
+	actual := yaml2Object(t, string(out))
+	assert.EqualValues(t, cleaned, actual)
 }
 
 func TestDebugBadJSON(t *testing.T) {
