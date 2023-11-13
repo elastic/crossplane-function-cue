@@ -6,6 +6,7 @@ on:
 jobs:
   create-coverage-report:
     name: create coverage report
+    if:  github.repository == 'elastic/crossplane-function-cue'
     runs-on: ubuntu-latest
     steps:
       - id: checkout
