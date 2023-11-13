@@ -64,7 +64,7 @@ func walkDelete(input any, parent string) {
 	case map[string]any:
 		if parent == connectionDetailsKey {
 			for k := range input {
-				input[k] = "<redacted>"
+				input[k] = []byte("<redacted>")
 			}
 		}
 		attrMap := systemAttrsLookup[parent]

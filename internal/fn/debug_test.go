@@ -18,7 +18,9 @@
 package fn
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"cuelang.org/go/cue/cuecontext"
@@ -120,7 +122,8 @@ func TestDebugRemoveConnectionDetails(t *testing.T) {
       secret1: super-secret
       secret2: even-more-secret
 `
-	cleanedYAML := `
+	redacted := []byte(base64.StdEncoding.EncodeToString([]byte("<redacted>")))
+	cleanedYAML := fmt.Sprintf(`
 - resource:
     resource: 
       apiVersion: v1
@@ -130,9 +133,9 @@ func TestDebugRemoveConnectionDetails(t *testing.T) {
       data:
         foo: bar
     connectionDetails:
-      secret1: <redacted>
-      secret2: <redacted>
-`
+      secret1: %s
+      secret2: %s
+`, redacted, redacted)
 	input := yaml2Object(t, inputYAML)
 	cleaned := yaml2Object(t, cleanedYAML)
 	inBytes, err := json.MarshalIndent(input, "", "  ")
