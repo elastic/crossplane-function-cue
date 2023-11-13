@@ -34,6 +34,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
+const debugAnnotation = "crossplane-function-cue/debug"
+
 // Options are options for the cue runner.
 type Options struct {
 	Logger logging.Logger
@@ -125,27 +127,42 @@ func (f *Cue) Eval(in *fnv1beta1.RunFunctionRequest, script string, debug DebugO
 // RunFunction runs the function. It expects a single script that is complete except for a `_request`
 // variable that the function runner supplies.
 func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) (outRes *fnv1beta1.RunFunctionResponse, finalErr error) {
-	tag := req.GetMeta().GetTag()
-	if tag == "" {
-		tag = "<unknown>"
-	}
-	logger := f.log.WithValues("tag", tag)
-	logger.Info("Running Function")
-
 	// setup response with desired state set up upstream functions
 	res := response.To(req, response.DefaultTTL)
 
+	logger := f.log
 	// automatically handle errors and response logging
 	defer func() {
 		if finalErr == nil {
-			f.log.Info("cue module executed successfully")
+			logger.Info("cue module executed successfully")
 			response.Normal(outRes, "cue module executed successfully")
 			return
 		}
-		f.log.Info(finalErr.Error())
+		logger.Info(finalErr.Error())
 		response.Fatal(res, finalErr)
 		outRes = res
 	}()
+
+	// setup logging and debugging
+	oxr, err := request.GetObservedCompositeResource(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "get observed composite")
+	}
+	tag := req.GetMeta().GetTag()
+	if tag != "" {
+		logger = f.log.WithValues("tag", tag)
+	}
+	logger = logger.WithValues(
+		"xr-version", oxr.Resource.GetAPIVersion(),
+		"xr-kind", oxr.Resource.GetKind(),
+		"xr-name", oxr.Resource.GetName(),
+	)
+	logger.Info("Running Function")
+	debugThis := false
+	annotations := oxr.Resource.GetAnnotations()
+	if annotations != nil && annotations[debugAnnotation] == "true" {
+		debugThis = true
+	}
 
 	// get inputs
 	in := &input.CueFunctionParams{}
@@ -157,7 +174,7 @@ func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) 
 	}
 
 	state, err := f.Eval(req, in.Spec.Script, DebugOptions{
-		Enabled: f.debug || in.Spec.Debug,
+		Enabled: f.debug || in.Spec.Debug || debugThis,
 		Raw:     in.Spec.DebugRaw,
 		Script:  in.Spec.DebugScript,
 	})

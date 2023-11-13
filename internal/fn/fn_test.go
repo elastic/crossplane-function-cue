@@ -40,7 +40,14 @@ func makeRequest(t *testing.T) *fnv1beta1.RunFunctionRequest {
 	"meta": { "tag": "v1" },
     "observed": {
         "composite": {
-            "resource": { "foo": "bar" },
+            "resource": {
+				"apiVersion": "v1",
+				"kind": "MyKind",
+				"metadata": {
+					"annotations": { "crossplane-function-cue/debug": "true" }
+				},
+				"foo": "bar" 
+			},
 			"ready": 0
         }
     },
