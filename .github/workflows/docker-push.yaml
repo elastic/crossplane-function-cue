@@ -8,6 +8,7 @@ on:
 jobs:
   docker-push:
     name: build and push docker image
+    if:  github.repository == 'elastic/crossplane-function-cue'
     runs-on: ubuntu-latest
     steps:
       - id: checkout
