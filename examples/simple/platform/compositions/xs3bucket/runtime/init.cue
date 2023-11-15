@@ -19,19 +19,19 @@ _tags:      [
 		{},
 ][0]
 _suffixes: [
-		if _spec.parameters.additionalSuffixes != _|_ {s: _spec.parameters.additionalSuffixes},
-		{s: []},
-][0].s
+		if _spec.parameters.additionalSuffixes != _|_ {_spec.parameters.additionalSuffixes},
+		{[]},
+][0]
 
 // #listWithDefault returns a list guaranteed to have a specific element at its end. The input list
 // may not be present but if it is, must be a real list.
 // use as: (#listWithDefault & { in: some.path.to.list, def: { "foo": "bar" } }).out
 #listWithDefault: {
 	x=in:  _ // input list or bottom
-	y=def: _ // a default value that will be at the end of the output list whether in is valid or not
+	def: _ // a default value that will be at the end of the output list whether in is valid or not
 	out:   [ // out is a list which is either a valid input list concatenated with a default value, or a list with a single default element
-		if x != _|_ {list.Concat([x, [y]])},
-		[y],
+		if x != _|_ {list.Concat([x, [def]])},
+		[def],
 	][0]
 }
 
@@ -42,8 +42,8 @@ _suffixes: [
 	y = _tmp:        (#listWithDefault & {in: x, def: {type: "Ready", status: "Unknown"}}).out
 	z = _readyValue: [ for r in y if r.type == "Ready" {r.status}][0]
 	out:             [
-				if z == "True" {ready:  "READY_TRUE"},
-				if z == "False" {ready: "READY_FALSE"},
-				{ready:                 "READY_UNSPECIFIED"},
-	][0].ready
+				if z == "True" {  "READY_TRUE"},
+				if z == "False" { "READY_FALSE"},
+				{              "READY_UNSPECIFIED"},
+	][0]
 }
