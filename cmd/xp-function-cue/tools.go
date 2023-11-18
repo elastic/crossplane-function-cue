@@ -70,7 +70,7 @@ func openapiCommand() *cobra.Command {
 }
 
 func packageScriptCommand() *cobra.Command {
-	var pkg, outFile, out string
+	var pkg, outFile, out, varName string
 	c := &cobra.Command{
 		Use:   "package-script ./path/to/package/dir",
 		Short: "generate a self-contained script as text",
@@ -79,6 +79,7 @@ func packageScriptCommand() *cobra.Command {
 				return err
 			}
 			out, err := cuetools.PackageScript(args[0], cuetools.PackageScriptOpts{
+				VarName:       varName,
 				OutputPackage: pkg,
 				Format:        cuetools.OutputFormat(out),
 			})
@@ -94,6 +95,7 @@ func packageScriptCommand() *cobra.Command {
 	}
 	f := c.Flags()
 	f.StringVar(&pkg, "pkg", "", "package name of generated cue file")
+	f.StringVar(&varName, "var", "_script", "the variable name to use for the script, cue format only")
 	f.StringVar(&outFile, "out-file", "", "output file name, default is stdout")
 	f.StringVarP(&out, "output", "o", string(cuetools.FormatCue), "output format, one of cue or raw")
 	return c
