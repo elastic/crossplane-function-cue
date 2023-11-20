@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/elastic/crossplane-function-cue/internal/cuetools"
 	"github.com/pkg/errors"
@@ -43,6 +44,14 @@ func checkOneArg(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func writeFile(file string, content []byte) error {
+	dir := filepath.Dir(file)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(file, content, 0o644)
+}
+
 func openapiCommand() *cobra.Command {
 	var pkg, outFile string
 	c := &cobra.Command{
@@ -60,7 +69,7 @@ func openapiCommand() *cobra.Command {
 				fmt.Println(string(out))
 				return nil
 			}
-			return os.WriteFile(outFile, out, 0o644)
+			return writeFile(outFile, out)
 		},
 	}
 	f := c.Flags()
@@ -90,7 +99,7 @@ func packageScriptCommand() *cobra.Command {
 				fmt.Println(string(out))
 				return nil
 			}
-			return os.WriteFile(outFile, out, 0o644)
+			return writeFile(outFile, out)
 		},
 	}
 	f := c.Flags()
@@ -129,7 +138,7 @@ func extractSchemaCommand() *cobra.Command {
 				fmt.Println(string(out))
 				return nil
 			}
-			return os.WriteFile(outFile, out, 0o644)
+			return writeFile(outFile, out)
 		},
 	}
 	f := c.Flags()
