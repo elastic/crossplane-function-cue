@@ -6,7 +6,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 
 | Name | Version | Licence |
 | ---- | ------- |---------|
-| [cuelang.org/go](https://cuelang.org/go) | v0.6.0 | Apache-2.0 |
+| [cuelang.org/go](https://cuelang.org/go) | v0.7.0-rc.1 | Apache-2.0 |
 | [github.com/crossplane/crossplane-runtime](https://github.com/crossplane/crossplane-runtime) | v1.14.0 | Apache-2.0 |
 | [github.com/crossplane/function-sdk-go](https://github.com/crossplane/function-sdk-go) | v0.1.0 | Apache-2.0 |
 | [github.com/ghodss/yaml](https://github.com/ghodss/yaml) | v1.0.0 | MIT |
@@ -34,6 +34,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [cloud.google.com/go/storage](https://cloud.google.com/go/storage) | v1.14.0 | Apache-2.0 |
 | [connectrpc.com/connect](https://connectrpc.com/connect) | v1.11.1 | Apache-2.0 |
 | [connectrpc.com/otelconnect](https://connectrpc.com/otelconnect) | v0.6.0 | Apache-2.0 |
+| [cuelabs.dev/go/oci/ociregistry](https://cuelabs.dev/go/oci/ociregistry) | v0.0.0-20231103182354-93e78c079a13 | Apache-2.0 |
 | [dario.cat/mergo](https://dario.cat/mergo) | v1.0.0 | BSD-3-Clause |
 | [dmitri.shuralyov.com/gpu/mtl](https://dmitri.shuralyov.com/gpu/mtl) | v0.0.0-20190408044501-666a987793e9 | BSD-3-Clause |
 | [github.com/Azure/go-ansiterm](https://github.com/Azure/go-ansiterm) | v0.0.0-20230124172434-306776ec8161 | MIT |
@@ -62,7 +63,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/client9/misspell](https://github.com/client9/misspell) | v0.3.4 | MIT |
 | [github.com/cncf/udpa/go](https://github.com/cncf/udpa) | v0.0.0-20220112060539-c52dc94e7fbe | Apache-2.0 |
 | [github.com/cncf/xds/go](https://github.com/cncf/xds) | v0.0.0-20230607035331-e9ce68804cb4 | Apache-2.0 |
-| [github.com/cockroachdb/apd/v3](https://github.com/cockroachdb/apd) | v3.2.0 | Apache-2.0 |
+| [github.com/cockroachdb/apd/v3](https://github.com/cockroachdb/apd) | v3.2.1 | Apache-2.0 |
 | [github.com/containerd/stargz-snapshotter/estargz](https://github.com/containerd/stargz-snapshotter) | v0.14.3 | Apache-2.0 |
 | [github.com/coreos/go-semver](https://github.com/coreos/go-semver) | v0.3.1 | Apache-2.0 |
 | [github.com/coreos/go-systemd/v22](https://github.com/coreos/go-systemd) | v22.5.0 | Apache-2.0 |
@@ -99,7 +100,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/go-openapi/jsonpointer](https://github.com/go-openapi/jsonpointer) | v0.19.6 | Apache-2.0 |
 | [github.com/go-openapi/jsonreference](https://github.com/go-openapi/jsonreference) | v0.20.2 | Apache-2.0 |
 | [github.com/go-openapi/swag](https://github.com/go-openapi/swag) | v0.22.3 | Apache-2.0 |
-| [github.com/go-quicktest/qt](https://github.com/go-quicktest/qt) | v1.100.0 | MIT |
+| [github.com/go-quicktest/qt](https://github.com/go-quicktest/qt) | v1.101.0 | MIT |
 | [github.com/go-task/slim-sprig](https://github.com/go-task/slim-sprig) | v0.0.0-20230315185526-52ccab3ef572 | MIT |
 | [github.com/gobuffalo/flect](https://github.com/gobuffalo/flect) | v1.0.2 | MIT |
 | [github.com/gofrs/uuid/v5](https://github.com/gofrs/uuid) | v5.0.0 | MIT |
@@ -195,8 +196,9 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/prometheus/common](https://github.com/prometheus/common) | v0.44.0 | Apache-2.0 |
 | [github.com/prometheus/procfs](https://github.com/prometheus/procfs) | v0.10.1 | Apache-2.0 |
 | [github.com/protocolbuffers/txtpbfmt](https://github.com/protocolbuffers/txtpbfmt) | v0.0.0-20230328191034-3462fbc510c0 | Apache-2.0 |
-| [github.com/rogpeppe/go-internal](https://github.com/rogpeppe/go-internal) | v1.11.0 | BSD-3-Clause |
+| [github.com/rogpeppe/go-internal](https://github.com/rogpeppe/go-internal) | v1.11.1-0.20231026093722-fa6a31e0812c | BSD-3-Clause |
 | [github.com/rs/cors](https://github.com/rs/cors) | v1.10.1 | MIT |
+| [github.com/russross/blackfriday](https://github.com/russross/blackfriday) | v1.6.0 | BSD-2-Clause |
 | [github.com/russross/blackfriday/v2](https://github.com/russross/blackfriday) | v2.1.0 | BSD-2-Clause |
 | [github.com/sirupsen/logrus](https://github.com/sirupsen/logrus) | v1.9.3 | MIT |
 | [github.com/soheilhy/cmux](https://github.com/soheilhy/cmux) | v0.1.5 | Apache-2.0 |
@@ -212,6 +214,9 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/vmihailenco/msgpack](https://github.com/vmihailenco/msgpack) | v4.0.4+incompatible | BSD-2-Clause |
 | [github.com/vmihailenco/msgpack/v4](https://github.com/vmihailenco/msgpack) | v4.3.12 | BSD-2-Clause |
 | [github.com/vmihailenco/tagparser](https://github.com/vmihailenco/tagparser) | v0.1.1 | BSD-2-Clause |
+| [github.com/xeipuuv/gojsonpointer](https://github.com/xeipuuv/gojsonpointer) | v0.0.0-20180127040702-4e3ac2762d5f | Apache-2.0 |
+| [github.com/xeipuuv/gojsonreference](https://github.com/xeipuuv/gojsonreference) | v0.0.0-20180127040603-bd5ef7bd5415 | Apache-2.0 |
+| [github.com/xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema) | v1.2.0 | Apache-2.0 |
 | [github.com/xiang90/probing](https://github.com/xiang90/probing) | v0.0.0-20190116061207-43a291ad63a2 | MIT |
 | [github.com/yuin/goldmark](https://github.com/yuin/goldmark) | v1.4.13 | MIT |
 | [github.com/zclconf/go-cty](https://github.com/zclconf/go-cty) | v1.11.0 | MIT |
