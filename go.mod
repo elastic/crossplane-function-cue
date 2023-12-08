@@ -3,7 +3,7 @@ module github.com/elastic/crossplane-function-cue
 go 1.21
 
 require (
-	cuelang.org/go v0.7.0-rc.1
+	cuelang.org/go v0.7.0
 	github.com/crossplane/crossplane-runtime v1.14.0
 	github.com/crossplane/function-sdk-go v0.1.0
 	github.com/ghodss/yaml v1.0.0

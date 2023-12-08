@@ -6,7 +6,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 
 | Name | Version | Licence |
 | ---- | ------- |---------|
-| [cuelang.org/go](https://cuelang.org/go) | v0.7.0-rc.1 | Apache-2.0 |
+| [cuelang.org/go](https://cuelang.org/go) | v0.7.0 | Apache-2.0 |
 | [github.com/crossplane/crossplane-runtime](https://github.com/crossplane/crossplane-runtime) | v1.14.0 | Apache-2.0 |
 | [github.com/crossplane/function-sdk-go](https://github.com/crossplane/function-sdk-go) | v0.1.0 | Apache-2.0 |
 | [github.com/ghodss/yaml](https://github.com/ghodss/yaml) | v1.0.0 | MIT |

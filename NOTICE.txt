@@ -10,11 +10,11 @@ Third party libraries used by the crossplane-function-cue project
 
 --------------------------------------------------------------------------------
 Module  : cuelang.org/go
-Version : v0.7.0-rc.1
-Time    : 2023-12-04T13:47:58Z
+Version : v0.7.0
+Time    : 2023-12-06T09:26:55Z
 Licence : Apache-2.0
 
-Contents of probable licence file $GOMODCACHE/cuelang.org/go@v0.7.0-rc.1/LICENSE:
+Contents of probable licence file $GOMODCACHE/cuelang.org/go@v0.7.0/LICENSE:
 
 
                                  Apache License
