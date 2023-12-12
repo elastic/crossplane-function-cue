@@ -63,7 +63,8 @@ func serverCommand() *cobra.Command {
 	flags := c.Flags()
 	flags.StringVar(&p.network, "network", p.network, "network on which to listen on")
 	flags.StringVar(&p.address, "address", p.address, "address on which to listen on")
-	flags.StringVar(&p.tlsCertsDir, "certs-dir", p.tlsCertsDir, "directory containing server certs (tls.key, tls.crt) and the CA used to verify client certificates (ca.crt), defaulted from TLS_SERVER_CERTS_DIR")
+	flags.StringVar(&p.tlsCertsDir, "tls-server-certs-dir", p.tlsCertsDir, "directory containing server certs (tls.key, tls.crt) and the CA used to verify client certificates (ca.crt), defaulted from TLS_SERVER_CERTS_DIR")
 	flags.BoolVarP(&p.Debug, "debug", "d", p.Debug, "enable debug logging")
+	flags.BoolVar(&p.insecure, "insecure", p.insecure, "run without mTLS credentials. If you supply this flag --tls-server-certs-dir will be ignored.")
 	return c
 }
