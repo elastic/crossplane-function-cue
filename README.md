@@ -21,12 +21,6 @@ $ make docker # build docker image
 $ make docker-push # push docker image
 ```
 
-## Warning
-
-This is alpha quality code that depends on unreleased features in crossplane. At this point, it is meant to be a demo
-to gather community feedback. See the [hacking](hacking/) directory for some ideas on how to set up your local
-environment.
-
 ## Function interface
 
 You define the function as follows:
@@ -83,11 +77,11 @@ additional cue code that looks like the following:
   "_request": <input-object>
 ```
 
-The &lt;input-object&gt; is the same as the [RunFunctionRequest](https://github.com/crossplane/crossplane/blob/4120759f8d4d5fc01f182fcb2b600a3ce038971d/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L33) 
+The &lt;input-object&gt; is the same as the [RunFunctionRequest](https://github.com/crossplane/crossplane/blob/bf5c51e6dfdde4c45a0d50c31c23147f5050e9dd/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L33) 
 message in JSON form, except it only contains the `observed`, `desired`, and `context` attributes. 
 It does **not** have the `meta` or the `input` attributes.
 
-The cue script is expected to return a response that is the JSON equivalent of the [State](https://github.com/crossplane/crossplane/blob/4120759f8d4d5fc01f182fcb2b600a3ce038971d/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L112)
+The cue script is expected to return a response that is the JSON equivalent of the [State](https://github.com/crossplane/crossplane/blob/bf5c51e6dfdde4c45a0d50c31c23147f5050e9dd/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L112)
 message containing the desired state. The function runner will selectively update its internal desired state with the
 returned resources. If a composite is returned, it will also be set in the response. You will only typically include the
 `status` of the composite resource.
