@@ -21,6 +21,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
+
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"cuelang.org/go/cue/cuecontext"
 	"cuelang.org/go/cue/format"
@@ -172,7 +175,19 @@ func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) 
 	if in.Spec.Script == "" {
 		return nil, fmt.Errorf("input script was not specified")
 	}
-
+	if in.Spec.DebugNew {
+		if len(req.GetObserved().GetResources()) == 0 {
+			debugThis = true
+		}
+	}
+	if in.Spec.TTL != "" {
+		d, err := time.ParseDuration(in.Spec.TTL)
+		if err != nil {
+			logger.Info(fmt.Sprintf("invalid TTL: %s, %v", in.Spec.TTL, err))
+		} else {
+			res.GetMeta().Ttl = durationpb.New(d)
+		}
+	}
 	state, err := f.Eval(req, in.Spec.Script, DebugOptions{
 		Enabled: f.debug || in.Spec.Debug || debugThis,
 		Raw:     in.Spec.DebugRaw,
