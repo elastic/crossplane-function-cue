@@ -33,7 +33,6 @@ import (
 	"github.com/elastic/crossplane-function-cue/internal/fn"
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
-	godiff "github.com/pmezard/go-difflib/difflib"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -210,17 +209,9 @@ func (t *Tester) runTest(f *fn.Cue, codeBytes []byte, tag string) (finalErr erro
 		return nil
 	}
 
-	ud := godiff.UnifiedDiff{
-		A:        godiff.SplitLines(expectedString),
-		B:        godiff.SplitLines(actualString),
-		FromFile: "expected",
-		ToFile:   "actual",
-		Context:  3,
-	}
-	s, err := godiff.GetUnifiedDiffString(ud)
+	err = printDiffs(expectedString, actualString)
 	if err != nil {
-		return errors.Wrap(err, "diff expected against actual")
+		_, _ = fmt.Fprintln(TestOutput, "error in running diff:", err)
 	}
-	_, _ = fmt.Fprintf(TestOutput, "diffs found:\n%s\n", strings.TrimSpace(s))
 	return fmt.Errorf("expected did not match actual")
 }
