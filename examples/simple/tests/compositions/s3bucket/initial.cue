@@ -75,7 +75,6 @@ resources: {
 				}
 			}
 		}
-		ready: "READY_UNSPECIFIED"
 	}
 	main: {
 		resource: {
@@ -92,7 +91,6 @@ resources: {
 				}
 			}
 		}
-		ready: "READY_UNSPECIFIED"
 	}
 	"bucket-002": {
 		resource: {
@@ -109,6 +107,5 @@ resources: {
 				}
 			}
 		}
-		ready: "READY_UNSPECIFIED"
 	}
 }

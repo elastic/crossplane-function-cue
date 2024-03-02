@@ -498,7 +498,6 @@ composite: resource: status: {
 }
 resources: {
 	"bucket-001": {
-		ready: "READY_TRUE"
 		resource: {
 			apiVersion: "s3.aws.upbound.io/v1beta1"
 			kind:       "Bucket"
@@ -511,7 +510,6 @@ resources: {
 		}
 	}
 	"bucket-002": {
-		ready: "READY_TRUE"
 		resource: {
 			apiVersion: "s3.aws.upbound.io/v1beta1"
 			kind:       "Bucket"
@@ -524,7 +522,6 @@ resources: {
 		}
 	}
 	main: {
-		ready: "READY_TRUE"
 		resource: {
 			apiVersion: "s3.aws.upbound.io/v1beta1"
 			kind:       "Bucket"
