@@ -1,0 +1,8 @@
+apiVersion: v2
+name: simple-cue-function
+description: |
+  Chart to install the simple cue function compositions.
+  Most of the contents of the chart are generated from cue under the zz_generated directory.
+type: application
+version: "0.1.0"
+appVersion: "v1.0.0"

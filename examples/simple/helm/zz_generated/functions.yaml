@@ -1,0 +1,16 @@
+metadata:
+  name: fn-cue-examples-simple
+spec:
+  package: gotwarlost/crossplane-function-cue:latest
+  packagePullPolicy: Always
+kind: Function
+apiVersion: pkg.crossplane.io/v1beta1
+---
+metadata:
+  name: fn-auto-ready
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.2.1
+kind: Function
+apiVersion: pkg.crossplane.io/v1beta1
+
+---

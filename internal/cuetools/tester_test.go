@@ -56,6 +56,13 @@ func TestTester(t *testing.T) {
 		Package: "./runtime",
 	})
 	require.NoError(t, err)
+	envDiff := "XP_FUNCTION_CUE_DIFF"
+	diffProgram := os.Getenv(envDiff)
+	if diffProgram != "" {
+		err = os.Unsetenv(envDiff) // we expect a specific diff format
+		require.NoError(t, err)
+		defer func() { _ = os.Setenv(envDiff, diffProgram) }()
+	}
 	err = tester.Run()
 	expected := `
 running test tags: correct, incorrect

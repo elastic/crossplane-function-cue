@@ -80,7 +80,7 @@ _request: {
 						type:               "Ready"
 					},
 				]
-				iamPolicyARN:    "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+				iamPolicyARN:    "arn:aws:iam::REDACTED:policy/bucket1-k4fvm-access-policy"
 				primaryEndpoint: "bucket1-k4fvm.s3.eu-west-1.amazonaws.com"
 			}
 		}
@@ -404,9 +404,9 @@ _request: {
 				}
 				status: {
 					atProvider: {
-						arn:         "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+						arn:         "arn:aws:iam::REDACTED:policy/bucket1-k4fvm-access-policy"
 						description: ""
-						id:          "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+						id:          "arn:aws:iam::REDACTED:policy/bucket1-k4fvm-access-policy"
 						path:        "/"
 						policy:      "{\"Statement\":[{\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::bucket1-k4fvm\",\"arn:aws:s3:::bucket1-k4fvm/*\",\"arn:aws:s3:::bucket1-k4fvm-001\",\"arn:aws:s3:::bucket1-k4fvm-001/*\",\"arn:aws:s3:::bucket1-k4fvm-002\",\"arn:aws:s3:::bucket1-k4fvm-002/*\"],\"Sid\":\"S3BucketAccess\"}],\"Version\":\"2012-10-17\"}"
 						policyId:    "ANPA34FXEWXYAXI6KVF6L"
@@ -593,12 +593,11 @@ _request: {
 			"bucket1-k4fvm-001.s3.eu-west-1.amazonaws.com",
 			"bucket1-k4fvm-002.s3.eu-west-1.amazonaws.com",
 		]
-		iamPolicyARN:    "arn:aws:iam::816427873776:policy/bucket1-k4fvm-access-policy"
+		iamPolicyARN:    "arn:aws:iam::REDACTED:policy/bucket1-k4fvm-access-policy"
 		primaryEndpoint: "bucket1-k4fvm.s3.eu-west-1.amazonaws.com"
 	}
 	resources: {
 		"bucket-001": {
-			ready: "READY_TRUE"
 			resource: {
 				apiVersion: "s3.aws.upbound.io/v1beta1"
 				kind:       "Bucket"
@@ -611,7 +610,6 @@ _request: {
 			}
 		}
 		"bucket-002": {
-			ready: "READY_TRUE"
 			resource: {
 				apiVersion: "s3.aws.upbound.io/v1beta1"
 				kind:       "Bucket"
@@ -624,7 +622,6 @@ _request: {
 			}
 		}
 		iam_policy: {
-			ready: "READY_TRUE"
 			resource: {
 				apiVersion: "iam.aws.upbound.io/v1beta1"
 				kind:       "Policy"
@@ -636,7 +633,6 @@ _request: {
 			}
 		}
 		main: {
-			ready: "READY_TRUE"
 			resource: {
 				apiVersion: "s3.aws.upbound.io/v1beta1"
 				kind:       "Bucket"

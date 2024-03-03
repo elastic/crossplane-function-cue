@@ -30,12 +30,27 @@ import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	// +optional
 	script?: string @go(Script)
 
-	// Debug prints inputs to and outputs of the cue script.
+	// TTL is a duration string which, when set, will cause the function to set the TTL
+	// for reconciliation to be the specified value. Defaults to 1m.
+	// +optional
+	ttl?: string @go(TTL)
+
+	// Debug prints inputs to and outputs of the cue script for all XRs.
 	// Inputs are pre-processed to remove typically irrelevant information like
 	// the last applied kubectl annotation, managed fields etc.
 	// Objects are displayed in compact cue format. (the equivalent of `cue fmt -s`)
+	// When false, individual XRs can still be debugged by annotation them with
+	//    crossplane-function-cue/debug: "true"
 	// +optional
 	debug?: bool @go(Debug)
+
+	// DebugNew controls whether a new XR that is being processed by the function
+	// has debug output. A "new" XR is determined by the request having only an
+	// observed composite but no other observed resources. This allows debug output for
+	// first-time reconciles of XRs when the user has not yet had the opportunity to
+	// annotate them.
+	// +optional
+	debugNew?: bool @go(DebugNew)
 
 	// DebugRaw disables the pre-processing of inputs.
 	// +optional

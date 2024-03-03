@@ -1,0 +1,5 @@
+{{- $files := .Files }}
+
+{{ $files.Get "zz_generated/functions.yaml" }}
+{{ $files.Get "zz_generated/xrds.yaml" }}
+{{ $files.Get "zz_generated/compositions.yaml" }}
