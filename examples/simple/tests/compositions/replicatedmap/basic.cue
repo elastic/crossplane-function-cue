@@ -1,6 +1,10 @@
 @if(basic)
 package replicatedmap
 
+import (
+	k8sCore "k8s.io/api/core/v1"
+)
+
 _request: {
 	context: "apiextensions.crossplane.io/environment": {
 		apiVersion: "internal.crossplane.io/v1alpha1"
@@ -43,6 +47,8 @@ _request: {
 		}
 	}
 }
+
+resources: config_map_bar: resource: spec: forProvider: manifest: k8sCore.#ConfigMap
 
 {
 	resources: {
