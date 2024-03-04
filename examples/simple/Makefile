@@ -108,9 +108,18 @@ k8s-apply: helm ## applies all helm artifacts to the ${XP_LOCAL_CONTEXT} context
 user-s3: $(CUE) ## renders namespaces and claims as YAML for the S3 bucket claims
 	@cue eval --out=text -e 'yaml.MarshalStream(s3_resources)' ./user
 
-.PHONY: user-apply
+.PHONY: user-s3-apply
 user-s3-apply: ## applies namespaces and claims for the S3 bucket claims to the ${XP_LOCAL_CONTEXT} context
 	@cue eval --out=text -e 'yaml.MarshalStream(s3_resources)' ./user | kubectl apply --context $(XP_LOCAL_CONTEXT) -f -
+
+.PHONY: user-map
+user-map: $(CUE) ## renders namespaces and claims as YAML for the replciated map claims
+	@cue eval --out=text -e 'yaml.MarshalStream(map_resources)' ./user
+
+.PHONY: user-map-apply
+user-map-apply: ## applies namespaces and claims for the replicated config map claims to the ${XP_LOCAL_CONTEXT} context
+	@cue eval --out=text -e 'yaml.MarshalStream(map_resources)' ./user | kubectl apply --context $(XP_LOCAL_CONTEXT) -f -
+
 
 .PHONY: clean
 clean: $(CUE) ## cleans all generated files

@@ -9,6 +9,44 @@ package schemas
 	}
 	paths: {}
 	components: schemas: {
+		ReplicatedMapV1alpha1: {
+			description: "A config map that is replicated to multiple namespaces"
+			type:        "object"
+			required: [
+				"spec",
+			]
+			properties: spec: {
+				description: "desired state of the replicated config map"
+				type:        "object"
+				required: [
+					"parameters",
+				]
+				properties: parameters: {
+					description: "input parameters"
+					type:        "object"
+					required: [
+						"data",
+						"namespaces",
+					]
+					properties: {
+						data: {
+							description: "data for the config map that will be created"
+							type:        "object"
+							additionalProperties: type: "string"
+						}
+						namespaces: {
+							description: "the namespaces to replicate the config map"
+							type:        "array"
+							items: type: "string"
+						}
+						name: {
+							description: "optional name for the config map. Default is the claim name"
+							type:        "string"
+						}
+					}
+				}
+			}
+		}
 		S3BucketV1alpha1: {
 			description: "allow creation of one of more S3 buckets"
 			type:        "object"
