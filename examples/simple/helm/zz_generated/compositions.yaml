@@ -1,4 +1,36 @@
 metadata:
+  name: xreplicatedmaps.simple.cuefn.example.com
+  labels:
+    crossplane.io/xrd: xreplicatedmaps.simple.cuefn.example.com
+spec:
+  compositeTypeRef:
+    apiVersion: simple.cuefn.example.com/v1alpha1
+    kind: XReplicatedMap
+  mode: Pipeline
+  resources: []
+  pipeline:
+    - step: run cue composition
+      functionRef:
+        name: fn-cue-examples-simple
+      input:
+        spec:
+          source: Inline
+          script: |
+            package replicatedmap
+
+            _request: {
+            	...
+            }
+          debugNew: true
+        kind: CueFunctionInput
+        apiVersion: function-cue/v1
+    - step: run auto ready
+      functionRef:
+        name: fn-auto-ready
+kind: Composition
+apiVersion: apiextensions.crossplane.io/v1
+---
+metadata:
   name: xs3buckets.simple.cuefn.example.com
   labels:
     crossplane.io/xrd: xs3buckets.simple.cuefn.example.com
