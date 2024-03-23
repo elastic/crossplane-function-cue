@@ -19,7 +19,9 @@ image?=gotwarlost/crossplane-function-cue
 
 build_date:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 commit:=$(shell git rev-parse --short HEAD 2> /dev/null)
-version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || echo latest)
+bdate:=$(shell date -u +%Y%m%d%H%M%S)
+bver:=$(shell git rev-parse --short=12 HEAD)
+version:=$(shell git describe --tags --exact-match --match='v*' 2> /dev/null || echo "$(bdate)-$(bver)")
 ldflags?=-X 'main.BuildDate=$(build_date)' -X 'main.Commit=$(commit)' -X 'main.Version=$(version)'
 
 .PHONY: local
