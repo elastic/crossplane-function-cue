@@ -14,7 +14,7 @@ This page lists the third-party dependencies used to build crossplane-function-c
 | [github.com/pmezard/go-difflib](https://github.com/pmezard/go-difflib) | v1.0.0 | BSD-3-Clause |
 | [github.com/spf13/cobra](https://github.com/spf13/cobra) | v1.7.0 | Apache-2.0 |
 | [github.com/stretchr/testify](https://github.com/stretchr/testify) | v1.8.4 | MIT |
-| [google.golang.org/protobuf](https://google.golang.org/protobuf) | v1.31.0 | BSD-3-Clause |
+| [google.golang.org/protobuf](https://google.golang.org/protobuf) | v1.33.0 | BSD-3-Clause |
 | [gopkg.in/yaml.v3](https://gopkg.in/yaml.v3) | v3.0.1 | MIT |
 | [k8s.io/apimachinery](https://github.com/kubernetes/apimachinery) | v0.28.3 | Apache-2.0 |
 | [sigs.k8s.io/controller-tools](https://sigs.k8s.io/controller-tools) | v0.13.0 | Apache-2.0 |
