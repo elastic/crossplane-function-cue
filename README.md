@@ -5,8 +5,7 @@ A crossplane function that runs cue scripts for composing resources.
 #### Build status
 
 ![go build](https://github.com/elastic/crossplane-function-cue/actions/workflows/go-build.yaml/badge.svg?branch=main)
-![docker build](https://github.com/elastic/crossplane-function-cue/actions/workflows/docker-build.yaml/badge.svg?branch=main)
-![docker push](https://github.com/elastic/crossplane-function-cue/actions/workflows/docker-push.yaml/badge.svg?branch=main)
+![docker build-push](https://github.com/elastic/crossplane-function-cue/actions/workflows/docker-build-push.yaml/badge.svg?branch=main)
 ![check notices](https://github.com/elastic/crossplane-function-cue/actions/workflows/check-notices.yaml/badge.svg?branch=main)
 ![check license headers](https://github.com/elastic/crossplane-function-cue/actions/workflows/check-license-headers.yaml/badge.svg?branch=main)
 
