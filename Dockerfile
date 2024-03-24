@@ -1,33 +1,34 @@
-FROM golang:1.21 as builder
-WORKDIR /workspace
-ARG ldflags="-X 'main.Version=unknown'"
+# syntax=docker/dockerfile:1
 
-# cache deps to the extent possible
+ARG GO_VERSION=1
+
+# setup the base environment.
+FROM --platform=${BUILDPLATFORM} golang:${GO_VERSION} AS base
+
+WORKDIR /fn
+ENV CGO_ENABLED=0
+
+ARG LDFLAGS="-X 'main.Version=unknown'"
+
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
-# copy and compile code
-COPY cmd/ ./cmd/
-COPY internal/ ./internal/
-COPY pkg/ ./pkg/
-COPY package/ ./package/
-COPY Makefile ./
-RUN make build ldflags="${ldflags}"
+# build the function.
+FROM base AS build
+ARG TARGETOS
+ARG TARGETARCH
+RUN --mount=target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags="${LDFLAGS}" -o /function ./cmd/xp-function-cue
 
-FROM busybox:latest as packager
-WORKDIR /package
-COPY --from=builder /workspace/package/ ./
-
-WORKDIR /output
+# produce the function image.
+FROM gcr.io/distroless/base-debian11 AS image
+WORKDIR /
+COPY --from=build /function ./
 COPY NOTICE.txt ./
 COPY DEPENDENCIES.md ./
 COPY LICENSE ./
-COPY --from=builder /go/bin/xp-function-cue ./
-RUN cat /package/crossplane.yaml >package.yaml
-RUN cat /package/input/*.yaml >>package.yaml
-
-FROM scratch as runner
-WORKDIR /
-COPY --from=packager /output/ /
 EXPOSE 9443
-ENTRYPOINT [ "/xp-function-cue", "server" ]
+USER nonroot:nonroot
+ENTRYPOINT ["/function", "server"]
