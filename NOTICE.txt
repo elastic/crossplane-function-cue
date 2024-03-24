@@ -989,11 +989,11 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 Module  : google.golang.org/protobuf
-Version : v1.31.0
-Time    : 2023-06-26T11:17:38Z
+Version : v1.33.0
+Time    : 2024-03-05T19:00:20Z
 Licence : BSD-3-Clause
 
-Contents of probable licence file $GOMODCACHE/google.golang.org/protobuf@v1.31.0/LICENSE:
+Contents of probable licence file $GOMODCACHE/google.golang.org/protobuf@v1.33.0/LICENSE:
 
 Copyright (c) 2018 The Go Authors. All rights reserved.
 
