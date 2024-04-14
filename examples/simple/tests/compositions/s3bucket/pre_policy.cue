@@ -3,7 +3,7 @@ package tests
 
 import "encoding/json"
 
-_request: {
+request: {
 	desired: {}
 	observed: {
 		composite: resource: {
@@ -489,14 +489,15 @@ _request: {
 }
 
 // expected output
-composite: resource: status: {
+response: desired: composite: resource: status: {
 	additionalEndpoints: [
 		"bucket1-wnht2-001.s3.eu-west-1.amazonaws.com",
 		"bucket1-wnht2-002.s3.eu-west-1.amazonaws.com",
 	]
 	primaryEndpoint: "bucket1-wnht2.s3.eu-west-1.amazonaws.com"
 }
-resources: {
+
+response: desired: resources: {
 	"bucket-001": {
 		resource: {
 			apiVersion: "s3.aws.upbound.io/v1beta1"

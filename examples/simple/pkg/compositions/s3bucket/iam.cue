@@ -5,16 +5,16 @@ import (
 	"list"
 )
 
-let mainARN = _request.observed.resources.main.resource.status.atProvider.arn
+let mainARN = request.observed.resources.main.resource.status.atProvider.arn
 let baseARN = [
 	if mainARN != _|_ {mainARN},
 	{"unknown"},
 ][0]
 
 let arns = [
-	for s in _suffixes {
+	for s in suffixes {
 		let bucketName = "bucket\(s)"
-		let arn = _request.observed.resources[bucketName].resource.status.atProvider.arn
+		let arn = request.observed.resources[bucketName].resource.status.atProvider.arn
 		[
 			if arn != _|_ {arn},
 			"unknown",
@@ -34,11 +34,11 @@ if baseARN != "unknown" {
 		],
 	])
 	let allResources = list.FlattenN( allTuples, 1)
-	resources: iam_policy: resource: {
+	response: desired: resources: iam_policy: resource: {
 		apiVersion: "iam.aws.upbound.io/v1beta1"
 		kind:       "Policy"
 		metadata: {
-			name: "\(_compName)-access-policy"
+			name: "\(compName)-access-policy"
 		}
 		spec: {
 			forProvider: {
@@ -64,8 +64,8 @@ if baseARN != "unknown" {
 
 // set the policy ARN on the status if found
 {
-	let policyARN = _request.observed.resources.iam_policy.resource.status.atProvider.arn
+	let policyARN = request.observed.resources.iam_policy.resource.status.atProvider.arn
 	if policyARN != _|_ {
-		composite: resource: status: iamPolicyARN: policyARN
+		response: desired: composite: resource: status: iamPolicyARN: policyARN
 	}
 }
