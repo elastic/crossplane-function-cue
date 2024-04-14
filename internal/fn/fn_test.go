@@ -64,6 +64,29 @@ func makeRequest(t *testing.T) *fnv1beta1.RunFunctionRequest {
 func TestEval(t *testing.T) {
 	script := `
 package runtime
+request: {...}
+response: desired: resources: main: resource: {
+	foo: request.observed.composite.resource.foo
+	bar: "baz"
+}
+`
+	f, err := New(Options{})
+	require.NoError(t, err)
+	req := makeRequest(t)
+	res, err := f.Eval(req, script, EvalOptions{
+		RequestVar:  "request",
+		ResponseVar: "response",
+		Debug:       DebugOptions{Enabled: true, Script: true},
+	})
+	require.NoError(t, err)
+	b, _ := protojson.Marshal(res)
+	blanksRemoved := strings.ReplaceAll(string(b), " ", "")
+	assert.Equal(t, `{"desired":{"resources":{"main":{"resource":{"bar":"baz","foo":"bar"}}}}}`, blanksRemoved)
+}
+
+func TestEvalLegacy(t *testing.T) {
+	script := `
+package runtime
 _request: {...}
 resources: main: resource: {
 	foo: _request.observed.composite.resource.foo
@@ -73,26 +96,35 @@ resources: main: resource: {
 	f, err := New(Options{})
 	require.NoError(t, err)
 	req := makeRequest(t)
-	state, err := f.Eval(req, script, DebugOptions{Enabled: true, Script: true})
+	res, err := f.Eval(req, script, EvalOptions{
+		RequestVar:          "_request",
+		ResponseVar:         "",
+		DesiredOnlyResponse: true,
+		Debug:               DebugOptions{Enabled: true, Script: true},
+	})
 	require.NoError(t, err)
-	b, _ := protojson.Marshal(state)
+	b, _ := protojson.Marshal(res)
 	blanksRemoved := strings.ReplaceAll(string(b), " ", "")
-	assert.Equal(t, `{"resources":{"main":{"resource":{"bar":"baz","foo":"bar"}}}}`, blanksRemoved)
+	assert.Equal(t, `{"desired":{"resources":{"main":{"resource":{"bar":"baz","foo":"bar"}}}}}`, blanksRemoved)
 }
 
 func TestEvalBadRuntimeCode(t *testing.T) {
 	script := `
 package runtime
-_request: {...}
-resources: main: resource: {
-	foo: _request.observed.composite.resource.NO_SUCH_FIELD
+request: {...}
+response: desired: resources: main: resource: {
+	foo: request.observed.composite.resource.NO_SUCH_FIELD
 	bar: "baz"
 }
 `
 	f, err := New(Options{})
 	require.NoError(t, err)
 	req := makeRequest(t)
-	_, err = f.Eval(req, script, DebugOptions{Enabled: true, Script: true})
+	_, err = f.Eval(req, script, EvalOptions{
+		RequestVar:  "request",
+		ResponseVar: "response",
+		Debug:       DebugOptions{Enabled: true, Script: true},
+	})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "undefined field: NO_SUCH_FIELD")
 }
@@ -100,13 +132,17 @@ resources: main: resource: {
 func TestEvalBadSourceCode(t *testing.T) {
 	script := `
 package runtime
-_request: {...}
-resources: main: resource: { // no closing brace
+request: {...}
+response: desired: resources: main: resource: { // no closing brace
 `
 	f, err := New(Options{})
 	require.NoError(t, err)
 	req := makeRequest(t)
-	_, err = f.Eval(req, script, DebugOptions{Enabled: true, Script: true})
+	_, err = f.Eval(req, script, EvalOptions{
+		RequestVar:  "request",
+		ResponseVar: "response",
+		Debug:       DebugOptions{Enabled: true, Script: true},
+	})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "compile cue code: expected '}', found 'EOF'")
 }
@@ -114,51 +150,112 @@ resources: main: resource: { // no closing brace
 func TestEvalBadReturnState(t *testing.T) {
 	script := `
 package runtime
-foo: "bar" // output does not conform to the State message
+response: desired: foo: "bar" // output does not conform to the State message
 `
 	f, err := New(Options{})
 	require.NoError(t, err)
 	req := makeRequest(t)
-	_, err = f.Eval(req, script, DebugOptions{Enabled: true, Script: true})
+	_, err = f.Eval(req, script, EvalOptions{
+		RequestVar:  "request",
+		ResponseVar: "response",
+		Debug:       DebugOptions{Enabled: true, Script: true},
+	})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "unmarshal cue output using proto json")
 	assert.Contains(t, err.Error(), `unknown field "foo"`)
 }
 
 func TestMergeResponse(t *testing.T) {
-	stateJSON := `
+	responseJSON := `
 {
-	"resources": {
-		"main": {
+	"desired":	{
+		"resources": {
+			"main": {
+				"resource": { "foo": "bar" },
+				"ready": 1
+			}
+		},
+		"composite": {
 			"resource": { "foo": "bar" },
 			"ready": 1
 		}
 	},
-	"composite": {
-		"resource": { "foo": "bar" },
-		"ready": 1
+	"context": {
+		"foo": "bar"
 	}
 }
 `
-	var state fnv1beta1.State
-	err := protojson.Unmarshal([]byte(stateJSON), &state)
+	var cueRes fnv1beta1.RunFunctionResponse
+	err := protojson.Unmarshal([]byte(responseJSON), &cueRes)
 	require.NoError(t, err)
 	var res fnv1beta1.RunFunctionResponse
 	f, err := New(Options{})
 	require.NoError(t, err)
-	f.mergeResponse(&res, &state)
+	_, err = f.mergeResponse(&res, &cueRes)
+	require.NoError(t, err)
 	b, _ := protojson.Marshal(&res)
 	blanksRemoved := strings.ReplaceAll(string(b), " ", "")
-	assert.Equal(t, `{"desired":{"composite":{"resource":{"foo":"bar"},"ready":"READY_TRUE"},"resources":{"main":{"resource":{"foo":"bar"},"ready":"READY_TRUE"}}}}`, blanksRemoved)
+	assert.Equal(t, `{"desired":{"composite":{"resource":{"foo":"bar"},"ready":"READY_TRUE"},"resources":{"main":{"resource":{"foo":"bar"},"ready":"READY_TRUE"}}},"context":{"foo":"bar"}}`, blanksRemoved)
+}
+
+func TestMergeResponseWithExisting(t *testing.T) {
+	existingJSON := `
+{
+	"desired":	{
+		"resources": {
+			"supplementary": {
+				"resource": { "foo": "bar" },
+				"ready": 1
+			}
+		}
+	},
+	"context": {
+		"foo": "foo2",
+		"bar": "baz"
+	}
+}
+`
+	responseJSON := `
+{
+	"desired":	{
+		"resources": {
+			"main": {
+				"resource": { "foo": "bar" },
+				"ready": 1
+			}
+		},
+		"composite": {
+			"resource": { "foo": "bar" },
+			"ready": 1
+		}
+	},
+	"context": {
+		"foo": "bar"
+	}
+}
+`
+	var cueRes fnv1beta1.RunFunctionResponse
+	err := protojson.Unmarshal([]byte(responseJSON), &cueRes)
+	require.NoError(t, err)
+	var res fnv1beta1.RunFunctionResponse
+	err = protojson.Unmarshal([]byte(existingJSON), &res)
+	require.NoError(t, err)
+	f, err := New(Options{})
+	require.NoError(t, err)
+	_, err = f.mergeResponse(&res, &cueRes)
+	require.NoError(t, err)
+	b, _ := protojson.Marshal(&res)
+	blanksRemoved := strings.ReplaceAll(string(b), " ", "")
+	assert.Equal(t, `{"desired":{"composite":{"resource":{"foo":"bar"},"ready":"READY_TRUE"},"resources":{"main":{"resource":{"foo":"bar"},"ready":"READY_TRUE"},"supplementary":{"resource":{"foo":"bar"},"ready":"READY_TRUE"}}},"context":{"bar":"baz","foo":"bar"}}`, blanksRemoved)
 }
 
 func TestRunFunction(t *testing.T) {
 	req := makeRequest(t)
 	script := `
 package runtime
-_request: {...}
-resources: main: resource: {
-	foo: _request.observed.composite.resource.foo
+request: {...}
+response: desired: resources: main: resource: {
+	foo: request.observed.composite.resource.foo
 	bar: "baz"
 }
 `

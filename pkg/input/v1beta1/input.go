@@ -50,6 +50,20 @@ type CueInputSpec struct {
 	// for reconciliation to be the specified value. Defaults to 1m.
 	// +optional
 	TTL string `json:"ttl,omitempty"`
+	// RequestVar is the variable name that the function will use to provide inputs to the
+	// cue script. Defaults to "request"
+	RequestVar string `json:"requestVar,omitempty"`
+	// ResponseVar is the variable name that the function will expect the response to be returned as.
+	// Defaults to "response". The special value "." means "use the entire object returned by the script".
+	// Note that if you use the "." value you should also set the request variable to be something private
+	// like "_request".
+	ResponseVar string `json:"responseVar,omitempty"`
+	// LegacyDesiredOnlyResponse provides backward compatibility with older versions
+	// of the function when the function only expected the desired state to be returned.
+	// When set, the response is unmarshalled into a State message instead of
+	// the RunFunctionResponse message.
+	// Deprecated: This attribute will be removed in a future release.
+	LegacyDesiredOnlyResponse bool `json:"legacyDesiredOnlyResponse,omitempty"`
 	// Debug prints inputs to and outputs of the cue script for all XRs.
 	// Inputs are pre-processed to remove typically irrelevant information like
 	// the last applied kubectl annotation, managed fields etc.

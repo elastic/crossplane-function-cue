@@ -72,12 +72,12 @@ PASS correct
 diffs found:
 --- expected
 +++ actual
-@@ -2,5 +2,5 @@
-   main:
-     resource:
-       bar: baz
--      foo: bar
-+      foo: foo2
+@@ -3,5 +3,5 @@
+     main:
+       resource:
+         bar: baz
+-        foo: bar
++        foo: foo2
 FAIL incorrect: expected did not match actual
 `
 	require.Error(t, err)

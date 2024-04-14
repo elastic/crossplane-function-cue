@@ -23,10 +23,10 @@ import (
 	"log"
 	"time"
 
-	"google.golang.org/protobuf/types/known/durationpb"
-
+	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/cuecontext"
-	"cuelang.org/go/cue/format"
+	"cuelang.org/go/cue/parser"
+
 	"github.com/crossplane/crossplane-runtime/pkg/logging"
 	"github.com/crossplane/function-sdk-go"
 	fnv1beta1 "github.com/crossplane/function-sdk-go/proto/v1beta1"
@@ -35,6 +35,8 @@ import (
 	input "github.com/elastic/crossplane-function-cue/pkg/input/v1beta1"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 const debugAnnotation = "crossplane-function-cue/debug"
@@ -74,9 +76,16 @@ type DebugOptions struct {
 	Script  bool // render the final script as a debug output
 }
 
-// Eval evaluates the supplied script with an additional _request object using the supplied request and returns the
-// response as a State message.
-func (f *Cue) Eval(in *fnv1beta1.RunFunctionRequest, script string, debug DebugOptions) (*fnv1beta1.State, error) {
+type EvalOptions struct {
+	RequestVar          string
+	ResponseVar         string
+	DesiredOnlyResponse bool
+	Debug               DebugOptions
+}
+
+// Eval evaluates the supplied script with an additional script that includes the supplied request and returns the
+// response.
+func (f *Cue) Eval(in *fnv1beta1.RunFunctionRequest, script string, opts EvalOptions) (*fnv1beta1.RunFunctionResponse, error) {
 	// input request only contains properties as documented in the interface, not the whole object
 	req := &fnv1beta1.RunFunctionRequest{
 		Observed: in.GetObserved(),
@@ -89,20 +98,13 @@ func (f *Cue) Eval(in *fnv1beta1.RunFunctionRequest, script string, debug DebugO
 		return nil, errors.Wrap(err, "proto json marshal")
 	}
 
-	preamble := "_request: "
-	if debug.Enabled {
-		log.Printf("[request:begin]\n%s %s\n[request:end]\n", preamble, f.getDebugString(reqBytes, debug.Raw))
+	preamble := fmt.Sprintf("%s: ", opts.RequestVar)
+	if opts.Debug.Enabled {
+		log.Printf("[request:begin]\n%s %s\n[request:end]\n", preamble, f.getDebugString(reqBytes, opts.Debug.Raw))
 	}
 
-	// format the additional input for now, should not be needed in production
-	code, err := format.Source([]byte(preamble+string(reqBytes)), format.TabIndent(false), format.UseSpaces(2))
-	if err != nil {
-		return nil, errors.Wrap(err, "format generated code")
-	}
-
-	// evaluate the script with the added _request variable
-	finalScript := script + "\n" + string(code)
-	if debug.Script {
+	finalScript := fmt.Sprintf("%s\n%s %s\n", script, preamble, reqBytes)
+	if opts.Debug.Script {
 		log.Printf("[script:begin]\n%s\n[script:end]\n", finalScript)
 	}
 
@@ -111,23 +113,46 @@ func (f *Cue) Eval(in *fnv1beta1.RunFunctionRequest, script string, debug DebugO
 	if val.Err() != nil {
 		return nil, errors.Wrap(val.Err(), "compile cue code")
 	}
+
+	if opts.ResponseVar != "" {
+		e, err := parser.ParseExpr("expression", opts.ResponseVar)
+		if err != nil {
+			return nil, errors.Wrap(err, "parse response expression")
+		}
+		val = val.Context().BuildExpr(e,
+			cue.Scope(val),
+			cue.InferBuiltins(true),
+		)
+		if val.Err() != nil {
+			return nil, errors.Wrap(val.Err(), "build response expression")
+		}
+	}
+
 	resBytes, err := val.MarshalJSON() // this can fail if value is not concrete
 	if err != nil {
 		return nil, errors.Wrap(err, "marshal cue output")
 	}
-	if debug.Enabled {
-		log.Printf("[response:begin]\n%s\n[response:end]\n", f.getDebugString(resBytes, debug.Raw))
+	if opts.Debug.Enabled {
+		log.Printf("[response:begin]\n%s\n[response:end]\n", f.getDebugString(resBytes, opts.Debug.Raw))
 	}
 
-	var ret fnv1beta1.State
-	err = protojson.Unmarshal(resBytes, &ret)
+	var ret fnv1beta1.RunFunctionResponse
+	if opts.DesiredOnlyResponse {
+		var state fnv1beta1.State
+		err = protojson.Unmarshal(resBytes, &state)
+		if err == nil {
+			ret.Desired = &state
+		}
+	} else {
+		err = protojson.Unmarshal(resBytes, &ret)
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "unmarshal cue output using proto json")
 	}
 	return &ret, nil
 }
 
-// RunFunction runs the function. It expects a single script that is complete except for a `_request`
+// RunFunction runs the function. It expects a single script that is complete, except for a request
 // variable that the function runner supplies.
 func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) (outRes *fnv1beta1.RunFunctionResponse, finalErr error) {
 	// setup response with desired state set up upstream functions
@@ -188,18 +213,37 @@ func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) 
 			res.GetMeta().Ttl = durationpb.New(d)
 		}
 	}
-	state, err := f.Eval(req, in.Spec.Script, DebugOptions{
-		Enabled: f.debug || in.Spec.Debug || debugThis,
-		Raw:     in.Spec.DebugRaw,
-		Script:  in.Spec.DebugScript,
+	// set up the request and response variables
+	requestVar := "request"
+	if in.Spec.RequestVar != "" {
+		requestVar = in.Spec.RequestVar
+	}
+	var responseVar string
+	switch in.Spec.ResponseVar {
+	case ".":
+		responseVar = ""
+	case "":
+		responseVar = "response"
+	default:
+		responseVar = in.Spec.ResponseVar
+	}
+	state, err := f.Eval(req, in.Spec.Script, EvalOptions{
+		RequestVar:          requestVar,
+		ResponseVar:         responseVar,
+		DesiredOnlyResponse: in.Spec.LegacyDesiredOnlyResponse,
+		Debug: DebugOptions{
+			Enabled: f.debug || in.Spec.Debug || debugThis,
+			Raw:     in.Spec.DebugRaw,
+			Script:  in.Spec.DebugScript,
+		},
 	})
 	if err != nil {
 		return res, errors.Wrap(err, "eval script")
 	}
-	return f.mergeResponse(res, state), nil
+	return f.mergeResponse(res, state)
 }
 
-func (f *Cue) mergeResponse(res *fnv1beta1.RunFunctionResponse, desired *fnv1beta1.State) *fnv1beta1.RunFunctionResponse {
+func (f *Cue) mergeResponse(res *fnv1beta1.RunFunctionResponse, cueResponse *fnv1beta1.RunFunctionResponse) (*fnv1beta1.RunFunctionResponse, error) {
 	// selectively add returned resources without deleting any previous desired state
 	if res.Desired == nil {
 		res.Desired = &fnv1beta1.State{}
@@ -208,12 +252,31 @@ func (f *Cue) mergeResponse(res *fnv1beta1.RunFunctionResponse, desired *fnv1bet
 		res.Desired.Resources = map[string]*fnv1beta1.Resource{}
 	}
 	// only set desired composite if the cue script actually returns it
-	if desired.GetComposite() != nil {
-		res.Desired.Composite = desired.GetComposite()
+	// TODO: maybe use fieldpath.Pave to only extract status
+	if cueResponse.Desired.GetComposite() != nil {
+		res.Desired.Composite = cueResponse.Desired.GetComposite()
 	}
 	// set desired resources from cue output
-	for k, v := range desired.GetResources() {
+	for k, v := range cueResponse.Desired.GetResources() {
 		res.Desired.Resources[k] = v
 	}
-	return res
+	// merge the context if cueResponse has something in it
+	if cueResponse.Context != nil {
+		ctxMap := map[string]interface{}{}
+		// set up base map, if found
+		if res.Context != nil {
+			ctxMap = res.Context.AsMap()
+		}
+		// merge values from cueResponse
+		for k, v := range cueResponse.Context.AsMap() {
+			ctxMap[k] = v
+		}
+		s, err := structpb.NewStruct(ctxMap)
+		if err != nil {
+			return nil, errors.Wrap(err, "set response context")
+		}
+		res.Context = s
+	}
+	// TODO: allow the cue layer to set warnings in cueResponse?
+	return res, nil
 }
