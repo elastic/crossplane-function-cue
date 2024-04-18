@@ -1,8 +1,8 @@
 package replicatedmap
 
-request: {...}
+#request: {...}
 
-composite: request.observed.composite.resource
+composite: #request.observed.composite.resource
 compName:  composite.metadata.name
 params:    composite.spec.parameters
 

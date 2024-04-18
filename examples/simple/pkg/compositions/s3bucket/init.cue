@@ -5,10 +5,10 @@ package s3bucket
 
 // responses should be generated based on the request object. The variable below declares it as an open struct
 // so that it can be referenced in expressions.
-request: {...}
+#request: {...}
 
 // create some fields for easy access to nested JSON paths and provide defaults
-composite: request.observed.composite.resource
+composite: #request.observed.composite.resource
 compName:  composite.metadata.name
 
 spec:      composite.spec

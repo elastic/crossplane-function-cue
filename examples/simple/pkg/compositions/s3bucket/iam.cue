@@ -5,7 +5,7 @@ import (
 	"list"
 )
 
-let mainARN = request.observed.resources.main.resource.status.atProvider.arn
+let mainARN = #request.observed.resources.main.resource.status.atProvider.arn
 let baseARN = [
 	if mainARN != _|_ {mainARN},
 	{"unknown"},
@@ -14,7 +14,7 @@ let baseARN = [
 let arns = [
 	for s in suffixes {
 		let bucketName = "bucket\(s)"
-		let arn = request.observed.resources[bucketName].resource.status.atProvider.arn
+		let arn = #request.observed.resources[bucketName].resource.status.atProvider.arn
 		[
 			if arn != _|_ {arn},
 			"unknown",
@@ -64,7 +64,7 @@ if baseARN != "unknown" {
 
 // set the policy ARN on the status if found
 {
-	let policyARN = request.observed.resources.iam_policy.resource.status.atProvider.arn
+	let policyARN = #request.observed.resources.iam_policy.resource.status.atProvider.arn
 	if policyARN != _|_ {
 		response: desired: composite: resource: status: iamPolicyARN: policyARN
 	}

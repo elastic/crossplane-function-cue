@@ -214,7 +214,7 @@ func (f *Cue) RunFunction(_ context.Context, req *fnv1beta1.RunFunctionRequest) 
 		}
 	}
 	// set up the request and response variables
-	requestVar := "request"
+	requestVar := "#request"
 	if in.Spec.RequestVar != "" {
 		requestVar = in.Spec.RequestVar
 	}

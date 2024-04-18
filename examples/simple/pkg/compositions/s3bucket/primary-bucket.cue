@@ -15,7 +15,7 @@ response: desired: resources: main: resource: {
 
 // set the primary endpoint on the status if found
 {
-	let p = request.observed.resources.main.resource.status.atProvider.bucketRegionalDomainName
+	let p = #request.observed.resources.main.resource.status.atProvider.bucketRegionalDomainName
 	if p != _|_ {
 		response: desired: composite: resource: status: primaryEndpoint: p
 	}

@@ -25,8 +25,8 @@ let endpoints0 = [
 	for s in suffixes {
 		let bucketName = "bucket\(s)"
 		[
-			if request.observed.resources[bucketName].resource.status.atProvider.bucketRegionalDomainName != _|_ {
-				request.observed.resources[bucketName].resource.status.atProvider.bucketRegionalDomainName
+			if #request.observed.resources[bucketName].resource.status.atProvider.bucketRegionalDomainName != _|_ {
+				#request.observed.resources[bucketName].resource.status.atProvider.bucketRegionalDomainName
 			},
 			"unknown",
 		][0]

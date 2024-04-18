@@ -3,7 +3,7 @@ package tests
 
 import "encoding/json"
 
-request: {
+#request: {
 	desired: {}
 	observed: {
 		composite: resource: {

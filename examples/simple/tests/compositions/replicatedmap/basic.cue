@@ -5,7 +5,7 @@ import (
 	k8sCore "k8s.io/api/core/v1"
 )
 
-request: {
+#request: {
 	context: "apiextensions.crossplane.io/environment": {
 		apiVersion: "internal.crossplane.io/v1alpha1"
 		kind:       "Environment"

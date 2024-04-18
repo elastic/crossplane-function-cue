@@ -64,9 +64,9 @@ func makeRequest(t *testing.T) *fnv1beta1.RunFunctionRequest {
 func TestEval(t *testing.T) {
 	script := `
 package runtime
-request: {...}
+#request: {...}
 response: desired: resources: main: resource: {
-	foo: request.observed.composite.resource.foo
+	foo: #request.observed.composite.resource.foo
 	bar: "baz"
 }
 `
@@ -74,7 +74,7 @@ response: desired: resources: main: resource: {
 	require.NoError(t, err)
 	req := makeRequest(t)
 	res, err := f.Eval(req, script, EvalOptions{
-		RequestVar:  "request",
+		RequestVar:  "#request",
 		ResponseVar: "response",
 		Debug:       DebugOptions{Enabled: true, Script: true},
 	})
@@ -253,9 +253,9 @@ func TestRunFunction(t *testing.T) {
 	req := makeRequest(t)
 	script := `
 package runtime
-request: {...}
+#request: {...}
 response: desired: resources: main: resource: {
-	foo: request.observed.composite.resource.foo
+	foo: #request.observed.composite.resource.foo
 	bar: "baz"
 }
 `

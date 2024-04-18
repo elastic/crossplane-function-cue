@@ -1,7 +1,7 @@
 @if(final)
 package tests
 
-request: {
+#request: {
 	context: {}
 	desired: {}
 	observed: {
