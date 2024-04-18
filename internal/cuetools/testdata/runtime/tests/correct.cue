@@ -1,11 +1,11 @@
 @if(correct)
 package tests
 
-_request: observed: composite: resource: {
+request: observed: composite: resource: {
 	foo: "bar"
 }
 
-resources: main: resource: {
+response: desired: resources: main: resource: {
 		foo: "bar"
 		bar: "baz"
 }

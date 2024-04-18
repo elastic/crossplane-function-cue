@@ -5,7 +5,7 @@ import (
 	k8sCore "k8s.io/api/core/v1"
 )
 
-_request: {
+#request: {
 	context: "apiextensions.crossplane.io/environment": {
 		apiVersion: "internal.crossplane.io/v1alpha1"
 		kind:       "Environment"
@@ -48,10 +48,10 @@ _request: {
 	}
 }
 
-resources: config_map_bar: resource: spec: forProvider: manifest: k8sCore.#ConfigMap
+response: desired: resources: config_map_bar: resource: spec: forProvider: manifest: k8sCore.#ConfigMap
 
 {
-	resources: {
+	response: desired: resources: {
 		config_map_bar: resource: {
 			apiVersion: "kubernetes.crossplane.io/v1alpha2"
 			kind:       "Object"

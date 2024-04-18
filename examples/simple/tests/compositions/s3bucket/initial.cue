@@ -3,7 +3,7 @@ package tests
 
 // this is the input you can copy from the debug log of the function pod.
 // The state here is the initial state of what you will typically see when the composite is first created.
-_request: {
+#request: {
 	desired: {}
 	observed: composite: resource: {
 		apiVersion: "simple.cuefn.example.com/v1alpha1"
@@ -59,7 +59,7 @@ _request: {
 }
 
 // this is the expected output for the input above and should exactly match what the code would produce.
-resources: {
+response: desired: resources: {
 	"bucket-001": {
 		resource: {
 			apiVersion: "s3.aws.upbound.io/v1beta1"

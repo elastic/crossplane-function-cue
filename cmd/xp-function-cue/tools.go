@@ -168,6 +168,9 @@ func cueTestCommand() *cobra.Command {
 	f := c.Flags()
 	f.StringSliceVar(&p.TestTags, "tag", nil, "list of test tags to enable, one per test")
 	f.StringVar(&p.TestPackage, "test-dir", "", "relative path to test package, defaults to a tests subdirectory under the package")
+	f.StringVar(&p.RequestVar, "request", "#request", "request variable to inject")
+	f.StringVar(&p.ResponseVar, "response", "response", "response variable to extract")
+	f.BoolVar(&p.LegacyDesiredOnlyResponse, "legacy-response", false, "enable legacy response")
 	f.BoolVar(&p.Debug, "debug", false, "enable eval debugging")
 	return c
 }

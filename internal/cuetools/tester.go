@@ -40,10 +40,13 @@ import (
 var TestOutput io.Writer = os.Stderr
 
 type TestConfig struct {
-	Package     string
-	TestPackage string
-	TestTags    []string
-	Debug       bool
+	Package                   string
+	TestPackage               string
+	TestTags                  []string
+	RequestVar                string
+	ResponseVar               string
+	LegacyDesiredOnlyResponse bool
+	Debug                     bool
 }
 
 type Tester struct {
@@ -180,19 +183,39 @@ func (t *Tester) runTest(f *fn.Cue, codeBytes []byte, tag string) (finalErr erro
 		}
 	}()
 
-	var expected fnv1beta1.State
-	err := evalPackage(t.config.TestPackage, tag, "", &expected)
+	requestVar := "request"
+	if t.config.RequestVar != "" {
+		requestVar = t.config.RequestVar
+	}
+
+	var responseVar string
+	switch t.config.ResponseVar {
+	case ".":
+		responseVar = ""
+	case "":
+		responseVar = "response"
+	default:
+		responseVar = t.config.ResponseVar
+	}
+
+	var expected fnv1beta1.RunFunctionResponse
+	err := evalPackage(t.config.TestPackage, tag, responseVar, &expected)
 	if err != nil {
 		return errors.Wrap(err, "evaluate expected")
 	}
 
 	var req fnv1beta1.RunFunctionRequest
-	err = evalPackage(t.config.TestPackage, tag, "_request", &req)
+	err = evalPackage(t.config.TestPackage, tag, requestVar, &req)
 	if err != nil {
 		return errors.Wrap(err, "evaluate request")
 	}
 
-	actual, err := f.Eval(&req, string(codeBytes), fn.DebugOptions{Enabled: t.config.Debug})
+	actual, err := f.Eval(&req, string(codeBytes), fn.EvalOptions{
+		RequestVar:          requestVar,
+		ResponseVar:         responseVar,
+		DesiredOnlyResponse: t.config.LegacyDesiredOnlyResponse,
+		Debug:               fn.DebugOptions{Enabled: t.config.Debug},
+	})
 	if err != nil {
 		return errors.Wrap(err, "evaluate package with test request")
 	}

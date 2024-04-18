@@ -1,7 +1,7 @@
 @if(final)
 package tests
 
-_request: {
+#request: {
 	context: {}
 	desired: {}
 	observed: {
@@ -587,7 +587,7 @@ _request: {
 	}
 }
 
-{
+response: desired: {
 	composite: resource: status: {
 		additionalEndpoints: [
 			"bucket1-k4fvm-001.s3.eu-west-1.amazonaws.com",

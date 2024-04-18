@@ -73,21 +73,24 @@ The cue script is a single self-contained program(*) that you provide which is c
 additional cue code that looks like the following:
 
 ```
-  "_request": <input-object>
+  "#request": <input-object>
 ```
 
 The &lt;input-object&gt; is the same as the [RunFunctionRequest](https://github.com/crossplane/crossplane/blob/bf5c51e6dfdde4c45a0d50c31c23147f5050e9dd/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L33) 
 message in JSON form, except it only contains the `observed`, `desired`, and `context` attributes. 
 It does **not** have the `meta` or the `input` attributes.
 
-The cue script is expected to return a response that is the JSON equivalent of the [State](https://github.com/crossplane/crossplane/blob/bf5c51e6dfdde4c45a0d50c31c23147f5050e9dd/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L112)
-message containing the desired state. The function runner will selectively update its internal desired state with the
+The cue script is expected to return a response that is the JSON equivalent of the [RunFunctionResponse](https://github.com/crossplane/crossplane/blob/bf5c51e6dfdde4c45a0d50c31c23147f5050e9dd/apis/apiextensions/fn/proto/v1beta1/run_function.proto#L66)
+message containing the desired state and optionally context variables to be set for the pipeline. 
+The function runner will selectively update its internal desired state with the
 returned resources. If a composite is returned, it will also be set in the response. You will only typically include the
 `status` of the composite resource.
 
 (*) Note that it is not necessary for the cue source code to be in a single file. It can span multiple files in a single
 package and depend on other packages. You use the `package-script` sub-command of `xp-function-cue` to create the
 self-contained script. This, in turn, uses `cue def --inline-imports` under the covers.
+
+The names of the request and response objects are configurable in the function input.
 
 See the [example implementation](examples/simple/platform/compositions/xs3bucket/runtime/) to get a sense of 
 how the composition works. A detailed walkthrough can be found in the [README](examples/simple/) for the example.

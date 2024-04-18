@@ -1,12 +1,12 @@
 package replicatedmap
 
-_request: {...}
+#request: {...}
 
-_composite: _request.observed.composite.resource
-_compName:  _composite.metadata.name
-_params:    _composite.spec.parameters
+composite: #request.observed.composite.resource
+compName:  composite.metadata.name
+params:    composite.spec.parameters
 
-_configMapName: [
-		if _params.name != _|_ {_params.name},
-		_composite.metadata.labels["crossplane.io/claim-name"],
+configMapName: [
+		if params.name != _|_ {params.name},
+		composite.metadata.labels["crossplane.io/claim-name"],
 ][0]
