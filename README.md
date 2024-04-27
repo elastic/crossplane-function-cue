@@ -1,5 +1,7 @@
 # crossplane-function-cue
 
+**This is now archived and has been contributed [upstream](https://github.com/crossplane-contrib/function-cue)**
+
 A crossplane function that runs cue scripts for composing resources.
 
 #### Build status
